@@ -1,0 +1,30 @@
+{
+    "hero": {
+        "title": "Quantum BTC",
+        "subtitle": "The Ultimate Lightning Network Stress-Test",
+        "cta": "Join the Stress-Test",
+        "description": "Not a game of chance. A provably fair cryptographic experiment funding the future of Bitcoin's post-quantum security."
+    },
+    "manifesto": {
+        "title": "The Quantum Manifesto",
+        "content": "Satoshi Nakamoto's vision requires defense against tomorrow's threats. We are using micro-transactions to stress-test the Lightning Network, while funding research into quantum-resistant cryptography."
+    },
+    "l1_l2": {
+        "title": "L1 Vault vs L2 Pocket",
+        "l1": "Bitcoin Layer 1 is the vault. Slow, expensive, but immutable.",
+        "l2": "Lightning Network is your pocket wallet. Instant, extremely cheap, perfect for everyday use."
+    },
+    "wallets": {
+        "title": "Recommended Lightning Wallets",
+        "muun": "Good for beginners. Beware of high hidden fees if the main network (L1) is congested.",
+        "phoenix": "Excellent non-custodial wallet. Perfect for users in emerging markets.",
+        "wos": "Custodial but easiest for immediate onboarding. Only store small amounts to test the network."
+    },
+    "faq": {
+        "title": "Security FAQ",
+        "q1": "Is this a casino?",
+        "a1": "No. This is a stress-taste mechanism designed to extract verifiable entropy and fund open-source research.",
+        "q2": "How is it fair?",
+        "a2": "We use the Drand network for provable, verifiable randomness. The hash is transparent."
+    }
+}

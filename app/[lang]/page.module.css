@@ -1,0 +1,55 @@
+.main {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    background: rgba(10, 10, 10, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.logo {
+    font-weight: 800;
+    font-size: 1.2rem;
+    color: var(--primary);
+    letter-spacing: -0.02em;
+}
+
+.langSwitch {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #71717a;
+}
+
+.langSwitch a {
+    transition: color 0.2s;
+}
+
+.langSwitch a:hover {
+    color: var(--foreground);
+}
+
+.activeLang {
+    color: var(--foreground) !important;
+}
+
+.footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    margin-top: auto;
+    color: #71717a;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.875rem;
+}

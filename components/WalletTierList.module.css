@@ -1,0 +1,85 @@
+.tierContainer {
+    padding: 4rem 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.walletItem {
+    display: block;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 2rem;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.walletItem:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateX(8px);
+    border-color: rgba(247, 147, 26, 0.3);
+}
+
+.walletHeader {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.walletName {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--foreground);
+}
+
+.badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-weight: 800;
+    font-size: 0.875rem;
+}
+
+.tierS {
+    background: #10b981;
+    color: #022c22;
+}
+
+.tierA {
+    background: #3b82f6;
+    color: #1e3a8a;
+}
+
+.tierB {
+    background: #f59e0b;
+    color: #451a03;
+}
+
+.typeTag {
+    margin-left: auto;
+    font-size: 0.875rem;
+    color: #71717a;
+    border: 1px solid #3f3f46;
+    padding: 0.25rem 0.75rem;
+    border-radius: 8px;
+}
+
+.walletDesc {
+    color: #a1a1aa;
+    line-height: 1.5;
+    font-size: 1.125rem;
+}
