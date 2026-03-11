@@ -20,9 +20,7 @@ export function middleware(request: NextRequest) {
 
 export const config = {
     matcher: [
-        // Skip all internal paths (_next)
-        '/((?!_next|favicon.ico).*)',
-        // Optional: only run on root (/) URL
-        // '/'
+        // Skip all internal paths (_next) and public well-known verification files
+        '/((?!_next|favicon.ico|.well-known).*)',
     ],
 }
