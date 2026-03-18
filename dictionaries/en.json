@@ -26,5 +26,24 @@
         "a1": "No. This is a stress-taste mechanism designed to extract verifiable entropy and fund open-source research.",
         "q2": "How is it fair?",
         "a2": "We use the Drand network for provable, verifiable randomness. The hash is transparent."
+    },
+    "quantum_shield": {
+        "title": "Sovereignty in the Quantum Era: Your Roadmap",
+        "intro": "Quantum computing is not just sci-fi; it's the biggest technical challenge Bitcoin will face in the next decade. At Quantum BTC, our mission is to ensure Satoshi's legacy survives this transition.",
+        "title1": "1. Understanding the Risk: ECDSA Fragility",
+        "desc1": "Bitcoin uses ECDSA for digital signatures. A sufficiently powerful quantum computer, using Shor's algorithm, could compute your private key from your public key in seconds.",
+        "bullet1_1": "If you use modern addresses (Native SegWit / Bech32), your public key remains hidden behind a hash, which is more resistant to quantum attacks.",
+        "bullet1_2": "Vulnerability: Ancient addresses starting with '1' and addresses that have already spent funds are at direct risk.",
+        "title2": "2. Defense Strategies in Discussion",
+        "bip360": "BIP-360: Lattice Signatures. Offers solid security but inflates transaction sizes.",
+        "commit": "Commit-then-Reveal. Efficient emergency exit, but slow for daily usage.",
+        "title3": "3. Our Strategy: Guided Migration with Covenants",
+        "strategy": "Through Covenants (Spending Restrictions) and Timelocks, we support tools for a forced yet secure migration.",
+        "title4": "4. What can you do today?",
+        "step1": "Stop reusing addresses.",
+        "step2": "Migrate to Native SegWit.",
+        "step3": "Experiment with the Lightning Network to reduce L1 exposure.",
+        "step4": "Contribute to the stress-test to directly fund this research.",
+        "conclusion": "Security is not a state, it's a process. By testing the Lightning Network, you protect the protocol."
     }
 }

@@ -1,0 +1,130 @@
+.container {
+    max-width: 1000px;
+    margin: 4rem auto;
+    padding: 2rem;
+    background: rgba(20, 20, 20, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    backdrop-filter: blur(10px);
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.iconWrapper {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(247, 147, 26, 0.2), rgba(247, 147, 26, 0.05));
+    border: 1px solid rgba(247, 147, 26, 0.3);
+    color: #f7931a;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 0 30px rgba(247, 147, 26, 0.15);
+}
+
+.title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    background: linear-gradient(90deg, #fff, #f7931a);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.intro {
+    font-size: 1.1rem;
+    color: #a0aab2;
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.card {
+    background: rgba(30, 30, 30, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    border-color: rgba(247, 147, 26, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.cardTitle {
+    font-size: 1.25rem;
+    color: #fff;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cardText {
+    color: #a0aab2;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+.list, .numberedList {
+    color: #a0aab2;
+    padding-left: 1.5rem;
+    line-height: 1.6;
+}
+
+.list li, .numberedList li {
+    margin-bottom: 0.5rem;
+}
+
+.warning {
+    color: #ff4d4d;
+}
+
+.strategyItem {
+    margin-bottom: 1rem;
+}
+
+.strategyItem h4 {
+    color: #f7931a;
+    margin-bottom: 0.25rem;
+    font-size: 1rem;
+}
+
+.strategyItem p {
+    color: #a0aab2;
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+.conclusion {
+    text-align: center;
+    padding: 1.5rem;
+    background: rgba(247, 147, 26, 0.05);
+    border: 1px solid rgba(247, 147, 26, 0.2);
+    border-radius: 12px;
+    color: #e0e0e0;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+    .title {
+        font-size: 2rem;
+    }
+}

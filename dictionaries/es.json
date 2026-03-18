@@ -26,5 +26,24 @@
         "a1": "No. Es un mecanismo de stress-test diseñado para extraer entropía verificable y financiar investigación open-source.",
         "q2": "¿Cómo es justo?",
         "a2": "Usamos la red Drand para una aleatoriedad provable y verificable. El hash es transparente."
+    },
+    "quantum_shield": {
+        "title": "Soberanía en la Era Cuántica: Tu Hoja de Ruta",
+        "intro": "La computación cuántica no es solo un tema de ciencia ficción; es el desafío técnico más grande que Bitcoin enfrentará en la próxima década. En Quantum BTC, nuestra misión es garantizar que el legado de Satoshi sobreviva a esta transición.",
+        "title1": "1. Entendiendo el Riesgo: La Fragilidad de ECDSA",
+        "desc1": "Bitcoin utiliza ECDSA para firmas digitales. Un ordenador cuántico suficientemente potente, utilizando el algoritmo de Shor, podría calcular tu clave privada a partir de tu clave pública en segundos.",
+        "bullet1_1": "Si usas direcciones modernas (Native SegWit / Bech32), tu clave pública permanece oculta tras un hash, que es más resistente al ataque cuántico.",
+        "bullet1_2": "Vulnerabilidad: Las direcciones antiguas que comienzan con '1' y aquellas que ya han enviado fondos están en riesgo directo.",
+        "title2": "2. Estrategias de Defensa en Discusión",
+        "bip360": "BIP-360: Firmas de Retícula (Lattice Signatures). Ofrece seguridad sólida, pero satura bloques.",
+        "commit": "Compromiso de Hash (Commit-then-Reveal). Salida de emergencia eficiente, pero lenta en el uso diario.",
+        "title3": "3. Nuestra Estrategia: Migración Guiada con Covenants",
+        "strategy": "Mediante Covenants (Restricciones de Gasto) y Timelocks, apoyamos as herramientas para una migración forzada pero segura.",
+        "title4": "4. ¿Qué puedes hacer tú hoy?",
+        "step1": "Deja de reutilizar direcciones.",
+        "step2": "Migra a Native SegWit.",
+        "step3": "Experimenta con Lightning Network para reducir exposición en L1.",
+        "step4": "Contribuye al stress-test para financiar esta investigación.",
+        "conclusion": "La seguridad no es un estado, es un proceso. Al probar Lightning Network proteges al protocolo."
     }
 }

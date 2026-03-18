@@ -5,6 +5,7 @@ import Manifesto from "../../components/Manifesto";
 import VisualGuide from "../../components/VisualGuide";
 import WalletTierList from "../../components/WalletTierList";
 import FAQ from "../../components/FAQ";
+import QuantumShielding from "../../components/QuantumShielding";
 
 // Using dynamic import of dictionaries
 const getDictionary = async (locale: string) => {
@@ -33,6 +34,7 @@ export default async function Home({ params }: { params: { lang: string } }) {
             <VisualGuide dict={dict.l1_l2} />
             <WalletTierList dict={dict.wallets} />
             <FAQ dict={dict.faq} />
+            <QuantumShielding dict={dict.quantum_shield} />
 
             <footer className={styles.footer}>
                 <p>© 2026 Quantum BTC. Support Post-Quantum Research.</p>
