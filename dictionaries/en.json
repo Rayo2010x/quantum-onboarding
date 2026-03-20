@@ -1,24 +1,24 @@
 {
     "hero": {
-        "title": "Quantum BTC",
-        "subtitle": "The Ultimate Lightning Network Stress-Test",
-        "cta": "Join the Stress-Test",
-        "description": "Not a game of chance. A provably fair cryptographic experiment funding the future of Bitcoin's post-quantum security."
+        "title": "Quantum BTC: Bitcoin Post-Quantum Security",
+        "subtitle": "The Ultimate Lightning Network (LN) Stress-Test",
+        "cta": "Start the LN Stress-Test",
+        "description": "Not a game of chance. A provably fair cryptographic BTC experiment funding the future of Bitcoin's post-quantum security."
     },
     "manifesto": {
         "title": "The Quantum Manifesto",
         "content": "Satoshi Nakamoto's vision requires defense against tomorrow's threats. We are using micro-transactions to stress-test the Lightning Network, while funding research into quantum-resistant cryptography."
     },
     "l1_l2": {
-        "title": "L1 Vault vs L2 Pocket",
-        "l1": "Bitcoin Layer 1 is the vault. Slow, expensive, but immutable.",
-        "l2": "Lightning Network is your pocket wallet. Instant, extremely cheap, perfect for everyday use."
+        "title": "Bitcoin L1 Vault vs Lightning LN Pocket",
+        "l1": "Bitcoin Layer 1 (L1) is the vault. Slow, expensive, but immutable.",
+        "l2": "Lightning Network (LN) is your pocket wallet. Instant, extremely cheap, perfect for everyday BTC payments."
     },
     "wallets": {
-        "title": "Recommended Lightning Wallets",
-        "muun": "Good for beginners. Beware of high hidden fees if the main network (L1) is congested.",
-        "phoenix": "Excellent non-custodial wallet. Perfect for users in emerging markets.",
-        "wos": "Custodial but easiest for immediate onboarding. Only store small amounts to test the network."
+        "title": "Recommended Bitcoin Lightning Wallets (LN)",
+        "muun": "Muun Wallet: Best for beginners. Beware of high hidden fees if the Bitcoin network (L1) is congested.",
+        "phoenix": "Phoenix Wallet: Excellent non-custodial LN option. Perfect for BTC users in emerging markets.",
+        "wos": "Wallet of Satoshi: Custodial but easiest for immediate onboarding. Only store small BTC amounts."
     },
     "faq": {
         "title": "Security FAQ",

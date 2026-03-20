@@ -1,24 +1,24 @@
 {
     "hero": {
-        "title": "Quantum BTC",
-        "subtitle": "El Máximo Stress-Test para Lightning Network",
-        "cta": "Unirse al Stress-Test",
-        "description": "No es un juego de azar. Es un experimento criptográfico provablemente justo que financia la seguridad post-cuántica de Bitcoin."
+        "title": "Quantum BTC: Seguridad Bitcoin Post-Cuántica",
+        "subtitle": "El Máximo Stress-Test para Lightning Network (LN)",
+        "cta": "Iniciar Stress-Test LN",
+        "description": "No es un juego de azar. Es un experimento criptográfico de BTC provablemente justo que financia la seguridad de Bitcoin."
     },
     "manifesto": {
         "title": "El Manifiesto Cuántico",
         "content": "La visión de Satoshi Nakamoto requiere defensa contra las amenazas del mañana. Usamos micro-transacciones para estresar Lightning Network, mientras financiamos la investigación en criptografía resistente a ataques cuánticos."
     },
     "l1_l2": {
-        "title": "Bóveda L1 vs Bolsillo L2",
-        "l1": "Bitcoin Capa 1 es la bóveda. Lenta, costosa, pero inmutable.",
-        "l2": "Lightning Network es tu billetera de bolsillo. Instantánea, increíblemente barata, perfecta para el uso diario."
+        "title": "Bóveda Bitcoin L1 vs Bolsillo Lightning LN",
+        "l1": "Bitcoin Capa 1 (L1) es la bóveda. Lenta, costosa, pero inmutable.",
+        "l2": "Lightning Network (LN) es tu billetera de bolsillo. Instantánea, increíblemente barata, perfecta para usar BTC."
     },
     "wallets": {
-        "title": "Billeteras Lightning Recomendadas",
-        "muun": "Ideal para principiantes. Cuidado con altas comisiones ocultas si la red (L1) está congestionada.",
-        "phoenix": "Excelente opción no-custodial. Perfecta para usuarios en mercados emergentes.",
-        "wos": "Custodial pero la más fácil para empezar. Úsala solo con montos pequeños para probar la red."
+        "title": "Billeteras (Wallets) Lightning Recomendadas para BTC",
+        "muun": "Muun Wallet: Ideal para principiantes. Cuidado con altas comisiones si la red Bitcoin (L1) está saturada.",
+        "phoenix": "Phoenix Wallet: Excelente opción no-custodial. Perfecta para usuarios de BTC en mercados emergentes.",
+        "wos": "Wallet of Satoshi: Custodial pero la más fácil para empezar. Úsala solo con montos pequeños."
     },
     "faq": {
         "title": "Preguntas Frecuentes de Seguridad",
