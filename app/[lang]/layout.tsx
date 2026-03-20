@@ -5,8 +5,14 @@ import "../globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-    title: "Quantum BTC | The Ultimate Lightning Network Stress-Test",
-    description: "Educational onboarding portal for Quantum BTC. Learn about Bitcoin, Lightning Network layers, and post-quantum research funding.",
+    title: {
+        default: "Quantum BTC | Lightning Network Stress-Test & Post-Quantum Security",
+        template: "%s | Quantum BTC",
+    },
+    description: "Join the ultimate Bitcoin Lightning Network stress-test. Learn about the quantum threat to ECDSA and help fund post-quantum cryptographic research while experimenting with micro-payments.",
+    verification: {
+        google: "V5GTFY-D1yaFjRdTapGS_nNUS15d4OQgd59-2pAMG9I",
+    },
 };
 
 export async function generateStaticParams() {
