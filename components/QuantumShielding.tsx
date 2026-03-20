@@ -32,13 +32,14 @@ export default function QuantumShielding({ dict }: { dict: any }) {
                 {/* Section 2 */}
                 <div className={styles.card}>
                     <h3 className={styles.cardTitle}>{dict.title2}</h3>
+                    <p className={styles.cardText}>{dict.desc2}</p>
                     <div className={styles.strategyItem}>
-                        <h4>BIP-360</h4>
-                        <p>{dict.bip360}</p>
+                        <h4>{dict.softfork_title}</h4>
+                        <p>{dict.softfork_desc}</p>
                     </div>
                     <div className={styles.strategyItem}>
-                        <h4>Commit-then-Reveal</h4>
-                        <p>{dict.commit}</p>
+                        <h4>{dict.hardfork_title}</h4>
+                        <p>{dict.hardfork_desc}</p>
                     </div>
                 </div>
 
