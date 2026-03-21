@@ -21,7 +21,7 @@ export default async function Home({ params }: { params: { lang: string } }) {
     return (
         <main className={styles.main}>
             <nav className={styles.nav}>
-                <div className={styles.logo}>⚡ Quantum BTC</div>
+                <div className={styles.logo}>⚡ QuantumBTC</div>
                 <div className={styles.langSwitch}>
                     <a href="/en" className={params.lang === 'en' ? styles.activeLang : ''}>EN</a>
                     <span>|</span>
@@ -37,7 +37,7 @@ export default async function Home({ params }: { params: { lang: string } }) {
             <QuantumShielding dict={dict.quantum_shield} />
 
             <footer className={styles.footer}>
-                <p>© 2026 Quantum BTC. Support Post-Quantum Research.</p>
+                <p>© 2026 QuantumBTC. Support Post-Quantum Research.</p>
             </footer>
         </main>
     );

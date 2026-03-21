@@ -6,8 +6,8 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
     title: {
-        default: "Quantum BTC | Lightning Network Stress-Test & Post-Quantum Security",
-        template: "%s | Quantum BTC",
+        default: "QuantumBTC | Lightning Network Stress-Test & Post-Quantum Security",
+        template: "%s | QuantumBTC",
     },
     description: "Join the ultimate Bitcoin Lightning Network stress-test. Learn about the quantum threat to ECDSA and help fund post-quantum cryptographic research while experimenting with micro-payments.",
     verification: {

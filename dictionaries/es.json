@@ -1,6 +1,6 @@
 {
     "hero": {
-        "title": "Quantum BTC: Seguridad Bitcoin Post-Cuántica",
+        "title": "QuantumBTC: Seguridad Bitcoin Post-Cuántica",
         "subtitle": "El Máximo Stress-Test para Lightning Network (LN)",
         "cta": "Iniciar Stress-Test LN",
         "description": "No es un juego de azar. Es un experimento criptográfico de BTC provablemente justo que financia la seguridad de Bitcoin."
@@ -29,7 +29,7 @@
     },
     "quantum_shield": {
         "title": "Soberanía Cuántica: Hoja de Ruta para el Futuro de Bitcoin",
-        "intro": "Si bien Bitcoin Capa 1 sigue siendo la Reserva de Valor Descentralizada definitiva, se enfrenta a un desafío técnico: la aparición del algoritmo de Shor en ordenadores cuánticos suficientemente potentes. Nuestra misión en Quantum BTC es investigar y documentar los caminos para una transición segura.",
+        "intro": "Si bien Bitcoin Capa 1 sigue siendo la Reserva de Valor Descentralizada definitiva, se enfrenta a un desafío técnico: la aparición del algoritmo de Shor en ordenadores cuánticos suficientemente potentes. Nuestra misión en QuantumBTC es investigar y documentar los caminos para una transición segura.",
         "title1": "1. La Amenaza: ECDSA y la Exposición de Claves Públicas",
         "desc1": "La firma digital actual de Bitcoin (ECDSA) se basa en la dureza del problema del logaritmo discreto de curva elíptica. Un ordenador cuántico podría derivar una clave privada a partir de una pública en segundos.",
         "bullet1_1": "La mayoría de las direcciones BTC modernas (Native SegWit) ocultan la clave pública tras un hash, proporcionando una protección base hasta que el dueño gasta desde ella.",

@@ -1,6 +1,6 @@
 {
     "hero": {
-        "title": "Quantum BTC: Bitcoin Post-Quantum Security",
+        "title": "QuantumBTC: Bitcoin Post-Quantum Security",
         "subtitle": "The Ultimate Lightning Network (LN) Stress-Test",
         "cta": "Start the LN Stress-Test",
         "description": "Not a game of chance. A provably fair cryptographic BTC experiment funding the future of Bitcoin's post-quantum security."
@@ -29,7 +29,7 @@
     },
     "quantum_shield": {
         "title": "Quantum Sovereignty: The Roadmap to Bitcoin's Future",
-        "intro": "While Bitcoin Layer 1 remains the ultimate Decentralized Store of Value, it faces a technical challenge: the emergence of Shor's algorithm on sufficiently large quantum computers. Our mission at Quantum BTC is to research and document the paths for a secure transition.",
+        "intro": "While Bitcoin Layer 1 remains the ultimate Decentralized Store of Value, it faces a technical challenge: the emergence of Shor's algorithm on sufficiently large quantum computers. Our mission at QuantumBTC is to research and document the paths for a secure transition.",
         "title1": "1. The Threat: ECDSA and Public Key Exposure",
         "desc1": "Bitcoin's current digital signature (ECDSA) relies on the hardness of the Elliptic Curve Discrete Logarithm Problem. A quantum computer could derive a private key from a public key in seconds.",
         "bullet1_1": "Most modern BTC addresses (Native SegWit) hide the public key behind a hash, providing baseline protection until the owner spends from it.",
