@@ -48,5 +48,14 @@
         "step3": "Keep your funds in cold storage for long term, but use LN for your daily experimentation.",
         "step4": "Support the stress-test at quantumbtc.dev to directly fund open-source research.",
         "conclusion": "Bitcoin's security is an iterative process. By building the shield today, we ensure Satoshi's legacy lasts for centuries."
+    },
+    "footer": {
+        "rights": "© 2026 QuantumBTC. Support Post-Quantum Research.",
+        "social": "You can contact us and/or follow our research at:",
+        "nostr": "Nostr",
+        "twitter": "X",
+        "discord": "Discord",
+        "telegram": "Telegram",
+        "github": "GitHub"
     }
 }

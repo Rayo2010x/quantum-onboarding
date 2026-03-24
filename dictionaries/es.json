@@ -48,5 +48,14 @@
         "step3": "Mantén tus fondos en almacenamiento en frío a largo plazo, pero usa LN para tu experimentación diaria.",
         "step4": "Apoya el stress-test en quantumbtc.dev para financiar directamente la investigación de código abierto.",
         "conclusion": "La seguridad de Bitcoin es un proceso iterativo. Al construir el escudo hoy, aseguramos que el legado de Satoshi dure por siglos."
+    },
+    "footer": {
+        "rights": "© 2026 QuantumBTC. Apoya la investigación post-cuántica.",
+        "social": "Puedes contactarnos y/o seguir nuestra investigación en:",
+        "nostr": "Nostr",
+        "twitter": "X",
+        "discord": "Discord",
+        "telegram": "Telegram",
+        "github": "GitHub"
     }
 }
