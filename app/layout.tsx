@@ -5,6 +5,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
+    metadataBase: new URL("https://learn.quantumbtc.dev"),
     title: {
         default: "QuantumBTC | Lightning Network Stress-Test & Post-Quantum Security",
         template: "%s | QuantumBTC",
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
     openGraph: {
         title: "QuantumBTC | The Ultimate Lightning Network Stress-Test",
         description: "Experiment with Bitcoin's layer 2 and secure the future against quantum attacks.",
-        url: "https://quantumbtc.dev",
+        url: "https://learn.quantumbtc.dev",
         siteName: "QuantumBTC",
         images: [
             {

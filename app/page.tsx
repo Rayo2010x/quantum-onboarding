@@ -1,4 +1,15 @@
+import type { Metadata } from "next";
 import styles from "./page.module.css";
+
+export const metadata: Metadata = {
+    alternates: {
+        canonical: "/",
+        languages: {
+            en: "/en",
+            es: "/es",
+        },
+    },
+};
 
 export default function Home() {
     return (
