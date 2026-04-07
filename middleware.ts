@@ -1,1 +1,10 @@
-// middleware removed for english-only structure
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
+
+export function middleware(request: NextRequest) {
+    return NextResponse.next()
+}
+
+export const config = {
+    matcher: [], // Match nothing
+}

@@ -1,2 +1,9 @@
 import { redirect } from "next/navigation";
-export default function Empty() { redirect("/"); }
+
+export async function generateStaticParams() {
+    return [{ lang: 'es' }];
+}
+
+export default function Empty() { 
+    redirect("/"); 
+}
