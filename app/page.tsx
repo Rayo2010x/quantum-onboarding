@@ -1,6 +1,9 @@
+'use client';
 import styles from "./page.module.css";
-import React from 'react';
-import Hero from "../components/Hero";
+import React, { useState } from 'react';
+import TabNav from "../components/TabNav";
+import type { TabId } from "../components/TabNav";
+import BrandHero from "../components/BrandHero";
 import Manifesto from "../components/Manifesto";
 import VisualGuide from "../components/VisualGuide";
 import WalletTierList from "../components/WalletTierList";
@@ -9,19 +12,74 @@ import QuantumShielding from "../components/QuantumShielding";
 import dict from "../dictionaries/en.json";
 
 export default function Home() {
+    const [activeTab, setActiveTab] = useState<TabId>('overview');
+
     return (
-        <main className={styles.main}>
-            <nav className={styles.nav}>
-                <div className={styles.logo}>⚡ QuantumBTC</div>
-            </nav>
+        <>
+            {/* Sticky tab navigation bar */}
+            <TabNav activeTab={activeTab} onTabChange={setActiveTab} />
 
-            <Hero dict={dict.hero} />
-            <Manifesto dict={dict.manifesto} />
-            <VisualGuide dict={dict.l1_l2} />
-            <WalletTierList dict={dict.wallets} />
-            <FAQ dict={dict.faq} />
-            <QuantumShielding dict={dict.quantum_shield} />
+            <main className={styles.main}>
 
+                {/* ── Tab 1: Overview ──────────────────────────── */}
+                <div
+                    id="panel-overview"
+                    role="tabpanel"
+                    aria-labelledby="tab-overview"
+                    hidden={activeTab !== 'overview'}
+                    className={styles.tabPanel}
+                >
+                    <BrandHero />
+                    <Manifesto dict={dict.manifesto} />
+                </div>
+
+                {/* ── Tab 2: L1 / L2 ───────────────────────────── */}
+                <div
+                    id="panel-l1l2"
+                    role="tabpanel"
+                    aria-labelledby="tab-l1l2"
+                    hidden={activeTab !== 'l1l2'}
+                    className={styles.tabPanel}
+                >
+                    <VisualGuide dict={dict.l1_l2} />
+                </div>
+
+                {/* ── Tab 3: Wallets ────────────────────────────── */}
+                <div
+                    id="panel-wallets"
+                    role="tabpanel"
+                    aria-labelledby="tab-wallets"
+                    hidden={activeTab !== 'wallets'}
+                    className={styles.tabPanel}
+                >
+                    <WalletTierList dict={dict.wallets} />
+                </div>
+
+                {/* ── Tab 4: QuantumShield ─────────────────────── */}
+                <div
+                    id="panel-quantumshield"
+                    role="tabpanel"
+                    aria-labelledby="tab-quantumshield"
+                    hidden={activeTab !== 'quantumshield'}
+                    className={styles.tabPanel}
+                >
+                    <QuantumShielding dict={dict.quantum_shield} />
+                </div>
+
+                {/* ── Tab 5: FAQ ───────────────────────────────── */}
+                <div
+                    id="panel-faq"
+                    role="tabpanel"
+                    aria-labelledby="tab-faq"
+                    hidden={activeTab !== 'faq'}
+                    className={styles.tabPanel}
+                >
+                    <FAQ dict={dict.faq} />
+                </div>
+
+            </main>
+
+            {/* Footer — always visible across all tabs */}
             <footer className={styles.footer}>
                 <div className={styles.footerContent}>
                     <p>{dict.footer.rights}</p>
@@ -45,6 +103,6 @@ export default function Home() {
                     </div>
                 </div>
             </footer>
-        </main>
+        </>
     );
 }

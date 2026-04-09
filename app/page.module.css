@@ -2,26 +2,22 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 2rem;
+    min-height: calc(100vh - 64px); /* 64px = TabNav header height */
+    padding: 2rem 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
 }
 
-.hero {
-    text-align: center;
+/* Tab panel — full width within main */
+.tabPanel {
+    width: 100%;
+    animation: fadeIn 0.2s ease-in-out;
 }
 
-.hero h1 {
-    font-size: 4rem;
-    margin-bottom: 1rem;
-    background: linear-gradient(to right, var(--primary), var(--accent));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.hero p {
-    font-size: 1.5rem;
-    color: #a3a3a3;
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
 .footer {
@@ -44,24 +40,36 @@
     gap: 1.5rem;
     color: #a3a3a3;
     font-size: 0.9rem;
-    padding: 0 1rem;
+    padding: 0 1.5rem;
 }
 
 .socialLinks {
     display: flex;
     align-items: center;
     gap: 1rem;
+    flex-wrap: wrap;
 }
 
 .socialLink {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     color: var(--primary);
     text-decoration: none;
-    padding: 0.4rem 0.8rem;
+    padding: 0.4rem;
     border-radius: 6px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     transition: all 0.3s ease;
     font-weight: 500;
+    width: 32px;
+    height: 32px;
+}
+
+.socialLink svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
 }
 
 .socialLink:hover {
@@ -73,9 +81,14 @@
 }
 
 @media (max-width: 768px) {
+    .main {
+        padding: 1.5rem 1rem;
+    }
+
     .footerContent {
         flex-direction: column;
         justify-content: center;
         text-align: center;
+        padding: 0 1rem;
     }
 }
