@@ -1,7 +1,7 @@
 # QL_Portal_Architecture — QuantumBTC Onboarding Portal
 
 > **ID:** QL_Portal_Architecture
-> **Version:** 1.0
+> **Version:** 1.1
 > **Last Updated:** 2026-04-09
 > **Status:** APPROVED
 
@@ -32,7 +32,7 @@ onboarding-portal/
 │   ├── robots.ts           ← next-sitemap robots config
 │   └── sitemap.ts          ← next-sitemap sitemap config
 ├── components/
-│   ├── TabNav.tsx          ← Sticky tab navigation bar (5 tabs)
+│   ├── TabNav.tsx          ← Sticky nav: tab bar on desktop, hamburger menu on mobile
 │   ├── BrandHero.tsx       ← Logo + Banner hero (Tab 1: Overview)
 │   ├── Hero.tsx            ← Original hero CTA section
 │   ├── Manifesto.tsx       ← "The Quantum Manifesto" card
@@ -59,6 +59,17 @@ The page is a **5-tab SPA** driven by React `useState` in `page.tsx`. `'use clie
 | `wallets` | Wallets | `WalletTierList` |
 | `quantumshield` | QuantumShield | `QuantumShielding` |
 | `faq` | FAQ | `FAQ` |
+
+## 4.1 Responsive Navigation (`TabNav`)
+
+`TabNav` adapts its layout to screen size with a single CSS breakpoint at **768px**:
+
+| Breakpoint | Behavior |
+| :--- | :--- |
+| ≥ 768px (Desktop) | Horizontal tab bar with icons + full labels. Active tab highlighted in `--primary` orange. |
+| < 768px (Mobile) | Tab bar hidden. A **hamburger button (☰)** appears in the top-right corner. Tapping it reveals a vertical dropdown menu with all 5 tabs (full label + icon). Selecting a tab closes the menu automatically. |
+
+**Hamburger animation:** The 3 bars animate into a **✕** when the menu is open, using CSS `transform: rotate()` transitions — identical to the pattern used in `quantumbtc.dev`'s `Layout.tsx`.
 
 ## 5. Design Tokens (globals.css)
 

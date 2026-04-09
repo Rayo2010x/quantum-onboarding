@@ -24,7 +24,7 @@ Documents use the `QL_` prefix as mandated by `SOP_Document_Control.md`.
 ## 02-Architecture (Technical Design)
 | Artifact | Version | Status | Last Modified |
 | :--- | :--- | :--- | :--- |
-| [Portal Architecture](02-Architecture/QL_Portal_Architecture.md) | 1.0 | **APPROVED** | 2026-04-09 |
+| [Portal Architecture](02-Architecture/QL_Portal_Architecture.md) | 1.1 | **APPROVED** | 2026-04-09 |
 | [SEO Strategy](02-Architecture/QL_SEO_Strategy.md) | 1.0 | **APPROVED** | 2026-04-09 |
 
 ## 03-Content (Messaging & Copy)
