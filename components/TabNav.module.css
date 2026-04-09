@@ -1,5 +1,7 @@
 /* ─────────────────────────────────────────────────
    TabNav — Sticky glassmorphism header navigation
+   Desktop: horizontal tab bar
+   Mobile:  hamburger button + dropdown menu
    ───────────────────────────────────────────────── */
 
 .header {
@@ -7,7 +9,7 @@
     top: 0;
     z-index: 100;
     width: 100%;
-    background: rgba(10, 10, 10, 0.85);
+    background: rgba(10, 10, 10, 0.88);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.07);
@@ -20,8 +22,9 @@
     padding: 0 1.5rem;
     display: flex;
     align-items: center;
-    gap: 2rem;
+    justify-content: space-between;
     height: 64px;
+    gap: 1.5rem;
 }
 
 /* ── Brand ─────────────────────────────────────── */
@@ -30,7 +33,6 @@
     align-items: center;
     gap: 0.5rem;
     flex-shrink: 0;
-    text-decoration: none;
 }
 
 .brandIcon {
@@ -47,22 +49,14 @@
     letter-spacing: -0.02em;
 }
 
-/* ── Tab Bar ───────────────────────────────────── */
+/* ── Desktop Tab Bar — hidden on mobile ─────────── */
 .tabBar {
     display: flex;
     align-items: center;
     gap: 0.25rem;
     flex: 1;
-    overflow-x: auto;
-    scrollbar-width: none;     /* Firefox */
-    -ms-overflow-style: none;  /* IE/Edge */
 }
 
-.tabBar::-webkit-scrollbar {
-    display: none; /* Chrome/Safari */
-}
-
-/* ── Individual Tab ────────────────────────────── */
 .tab {
     display: flex;
     align-items: center;
@@ -102,33 +96,131 @@
     line-height: 1;
 }
 
-/* ── Responsive ────────────────────────────────── */
-@media (max-width: 640px) {
-    .inner {
-        padding: 0 1rem;
-        gap: 1rem;
+/* ── Hamburger Button — visible only on mobile ─── */
+.hamburger {
+    display: none; /* Hidden on desktop */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    padding: 0;
+    flex-shrink: 0;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.hamburger:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(247, 147, 26, 0.3);
+}
+
+.hamburger:focus {
+    outline: 2px solid rgba(247, 147, 26, 0.5);
+    outline-offset: 2px;
+}
+
+/* Animated bars */
+.bar {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: #a1a1aa;
+    border-radius: 2px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center;
+}
+
+/* Open state animations */
+.barTop  { transform: rotate(45deg) translate(5px, 5px); background: var(--primary); }
+.barMid  { opacity: 0; transform: scaleX(0); }
+.barBot  { transform: rotate(-45deg) translate(5px, -5px); background: var(--primary); }
+
+/* ── Mobile Dropdown Menu ───────────────────────── */
+.mobileMenu {
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    background: rgba(10, 10, 10, 0.95);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.mobileNav {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0.5rem 1.5rem 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.mobileTab {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    text-align: left;
+    padding: 0.875rem 0.75rem;
+    border-radius: 0.5rem;
+    background: transparent;
+    border: 1px solid transparent;
+    color: #71717a;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.mobileTab:hover {
+    color: var(--foreground);
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.mobileTabActive {
+    color: var(--primary);
+    background: rgba(247, 147, 26, 0.08);
+    border-color: rgba(247, 147, 26, 0.2);
+    font-weight: 600;
+}
+
+.mobileTabIcon {
+    font-size: 1.25rem;
+    width: 28px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+/* ── Responsive breakpoints ─────────────────────── */
+
+/* Mobile: hide desktop tabs, show hamburger */
+@media (max-width: 767px) {
+    .tabBar {
+        display: none;
     }
 
-    .brandName {
-        display: none; /* Show icon only on very small screens */
-    }
-
-    .tab {
-        padding: 0.5rem 0.625rem;
-    }
-
-    .tabLabel {
-        display: none; /* Icon-only on mobile */
-    }
-
-    .tabIcon {
-        font-size: 1.125rem;
+    .hamburger {
+        display: flex;
     }
 }
 
-@media (min-width: 641px) and (max-width: 900px) {
-    .tab {
-        padding: 0.5rem 0.75rem;
-        font-size: 0.8125rem;
+/* Desktop: hide hamburger button */
+@media (min-width: 768px) {
+    .hamburger {
+        display: none;
+    }
+
+    .mobileMenu {
+        display: none;
     }
 }
