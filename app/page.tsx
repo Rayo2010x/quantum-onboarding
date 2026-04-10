@@ -9,6 +9,7 @@ import VisualGuide from "../components/VisualGuide";
 import WalletTierList from "../components/WalletTierList";
 import FAQ from "../components/FAQ";
 import QuantumShielding from "../components/QuantumShielding";
+import WalletLab from "../components/WalletLab";
 import dict from "../dictionaries/en.json";
 
 export default function Home() {
@@ -75,6 +76,17 @@ export default function Home() {
                     className={styles.tabPanel}
                 >
                     <FAQ dict={dict.faq} />
+                </div>
+
+                {/* ── Tab 6: Wallet Lab ───────────────────── */}
+                <div
+                    id="panel-walletlab"
+                    role="tabpanel"
+                    aria-labelledby="tab-walletlab"
+                    hidden={activeTab !== 'walletlab'}
+                    className={styles.tabPanel}
+                >
+                    <WalletLab />
                 </div>
 
             </main>

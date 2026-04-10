@@ -10,6 +10,10 @@
     "clean": "node cleanup.js"
   },
   "dependencies": {
+    "@noble/hashes": "^2.0.1",
+    "@noble/secp256k1": "^3.0.0",
+    "@scure/base": "^2.0.0",
+    "@supabase/supabase-js": "^2.103.0",
     "next": "14.2.3",
     "react": "^18",
     "react-dom": "^18"

