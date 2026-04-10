@@ -48,7 +48,7 @@ async function sha256Hex(text: string): Promise<string> {
 // ── Mempool API query (browser, each user consumes own quota) ──────────
 async function queryAddress(url: string): Promise<MempoolData> {
     try {
-        const res = await fetch(url);
+        const res = await fetch(url, { mode: 'cors', credentials: 'omit' });
         if (res.status === 404) return { status: 'empty' };
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json() as { chain_stats: { tx_count: number; funded_txo_sum: number; spent_txo_sum: number } };
@@ -126,14 +126,18 @@ export default function WalletLab() {
 
             const base = 'https://mempool.space/api';
 
-            // Step 3: Query all 5 addresses in parallel from the browser
-            const [pubkeyData, legUncompData, legCompData, p2shData, bech32Data] = await Promise.all([
-                queryScripthash(`${base}/scripthash/${deriveData.p2pk_scripthash}`),
-                queryAddress(`${base}/address/${deriveData.legacy_uncomp}`),
-                queryAddress(`${base}/address/${deriveData.legacy_comp}`),
-                queryAddress(`${base}/address/${deriveData.p2sh}`),
-                queryAddress(`${base}/address/${deriveData.bech32}`),
-            ]);
+            // Step 3: Query addresses SEQUENTIALLY to avoid triggering mempool.space
+            //         DDoS protection (which resets TCP connections on concurrent bursts).
+            const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
+            const pubkeyData    = await queryScripthash(`${base}/scripthash/${deriveData.p2pk_scripthash}`);
+            await delay(150);
+            const legUncompData = await queryAddress(`${base}/address/${deriveData.legacy_uncomp}`);
+            await delay(150);
+            const legCompData   = await queryAddress(`${base}/address/${deriveData.legacy_comp}`);
+            await delay(150);
+            const p2shData      = await queryAddress(`${base}/address/${deriveData.p2sh}`);
+            await delay(150);
+            const bech32Data    = await queryAddress(`${base}/address/${deriveData.bech32}`);
 
             setMempool({
                 pubkey:       pubkeyData,
