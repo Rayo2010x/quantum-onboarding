@@ -7,8 +7,29 @@ export default function FAQ({ dict }: { dict: any }) {
         { q: dict.q2, a: dict.a2 }
     ];
 
+    // JSON-LD FAQPage schema — enables FAQ rich results in Google Search.
+    // Data is derived from the same dict to avoid divergence.
+    const faqSchema = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": faqs.map((faq) => ({
+            "@type": "Question",
+            "name": faq.q,
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": faq.a
+            }
+        }))
+    };
+
     return (
         <section className={styles.faqContainer}>
+            {/* FAQPage structured data for Google Rich Results */}
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+            />
+
             <h2 className={styles.title}>{dict.title}</h2>
             <div className={styles.accordion}>
                 {faqs.map((faq, index) => (
