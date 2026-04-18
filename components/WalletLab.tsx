@@ -309,20 +309,22 @@ export default function WalletLab() {
                                 ).map(({ id, label, value, delay }) => (
                                     <div key={id} className={styles.addrRow} style={{ animationDelay: delay }}>
                                         <span className={styles.addrLabel}>{label}</span>
-                                        <span
-                                            className={styles.addrValue}
-                                            title={value}
-                                            onClick={() => copyValue(value, id)}
-                                        >
-                                            {truncateAddr(value)}
-                                        </span>
-                                        <button
-                                            className={`${styles.copyBtn} ${copiedId === id ? styles.copyBtnCopied : ''}`}
-                                            onClick={() => copyValue(value, id)}
-                                            aria-label={`Copy ${label}`}
-                                        >
-                                            {copiedId === id ? '✓ copied' : 'copy'}
-                                        </button>
+                                        <div className={styles.addrValueRow}>
+                                            <span
+                                                className={styles.addrValue}
+                                                title={value}
+                                                onClick={() => copyValue(value, id)}
+                                            >
+                                                {truncateAddr(value)}
+                                            </span>
+                                            <button
+                                                className={`${styles.copyBtn} ${copiedId === id ? styles.copyBtnCopied : ''}`}
+                                                onClick={() => copyValue(value, id)}
+                                                aria-label={`Copy ${label}`}
+                                            >
+                                                {copiedId === id ? '✓ copied' : 'copy'}
+                                            </button>
+                                        </div>
                                     </div>
                                 ))}
 
@@ -335,13 +337,13 @@ export default function WalletLab() {
 
                                     {(
                                         [
-                                            { key: 'pubkey'       as const, label: '0. P2PK' },
-                                            { key: 'legacyUncomp' as const, label: '1. Legacy Uncomp.' },
-                                            { key: 'legacyComp'   as const, label: '2. Legacy Comp.' },
-                                            { key: 'p2sh'         as const, label: '3. P2SH' },
-                                            { key: 'bech32'       as const, label: '4. P2WPKH' },
-                                            { key: 'p2wsh'        as const, label: '5. P2WSH' },
-                                            { key: 'p2tr'         as const, label: '6. P2TR' },
+                                            { key: 'pubkey'       as const, label: '1. P2PK' },
+                                            { key: 'legacyUncomp' as const, label: '2. P2PKH Uncomp' },
+                                            { key: 'legacyComp'   as const, label: '3. P2PKH Comp' },
+                                            { key: 'p2sh'         as const, label: '4. P2SH' },
+                                            { key: 'bech32'       as const, label: '5. P2WPKH' },
+                                            { key: 'p2wsh'        as const, label: '6. P2WSH' },
+                                            { key: 'p2tr'         as const, label: '7. P2TR' },
                                         ]
                                     ).map(({ key, label }) => {
                                         const data = mempool[key];

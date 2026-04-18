@@ -267,11 +267,10 @@
 
 /* ── Address rows ────────────────────────────────────────────────────── */
 .addrRow {
-  display: grid;
-  grid-template-columns: 140px 1fr auto;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.9rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.75rem 1rem;
   border-radius: var(--lab-radius);
   background: var(--lab-bg2);
   margin-bottom: 0.6rem;
@@ -289,11 +288,21 @@
 
 .addrLabel {
   font-family: var(--lab-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.08em;
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--lab-text2);
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Value + copy button share a single flex row */
+.addrValueRow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 0;
 }
 
 .addrValue {
@@ -414,7 +423,6 @@
 
 /* ── Responsive ──────────────────────────────────────────────────────── */
 @media (max-width: 580px) {
-  .addrRow { grid-template-columns: 1fr auto; }
-  .addrLabel { display: none; }
+  .addrRow { padding: 0.65rem 0.75rem; }
   .mempoolRow { grid-template-columns: 1fr; gap: 0.3rem; }
 }
