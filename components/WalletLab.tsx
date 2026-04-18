@@ -94,7 +94,7 @@ export default function WalletLab() {
 
     // Display helper: show first 4 + last 4 chars to avoid label/value collision
     const truncateAddr = useCallback((addr: string): string => {
-        return addr.length > 12 ? `${addr.slice(0, 4)}...${addr.slice(-4)}` : addr;
+        return addr.length > 26 ? `${addr.slice(0, 16)}...${addr.slice(-8)}` : addr;
     }, []);
 
 
