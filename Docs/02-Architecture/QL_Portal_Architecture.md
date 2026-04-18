@@ -1,8 +1,8 @@
 # QL_Portal_Architecture — QuantumBTC Onboarding Portal
 
 > **ID:** QL_Portal_Architecture
-> **Version:** 1.2
-> **Last Updated:** 2026-04-10
+> **Version:** 1.3
+> **Last Updated:** 2026-04-17
 > **Status:** APPROVED
 
 ## 1. Overview
@@ -110,9 +110,21 @@ The **Wallet Lab** is a cryptography education tool that demonstrates how Bitcoi
 #### `POST /api/wallet-lab/derive`
 - **Runtime:** Node.js
 - **Input:** `{ phrase: string }`
-- **Output:** `{ pubkey_hex, p2pk_scripthash, legacy_uncomp, legacy_comp, p2sh, bech32 }`
-- **Libraries:** `@noble/secp256k1`, `@noble/hashes`, `@scure/base`
+- **Output:** `{ pubkey_hex, p2pk_scripthash, legacy_uncomp, legacy_comp, p2sh, bech32, p2wsh, p2tr }`
+- **Libraries:** `@noble/secp256k1` (ECDSA + Schnorr), `@noble/hashes`, `@scure/base` (bech32 + bech32m)
 - **Security:** Private key is computed and discarded server-side. It is **never** logged or returned.
+
+**Derived address types (7 total):**
+
+| # | Name | Format | Algorithm |
+| :--- | :--- | :--- | :--- |
+| 1 | Pay-to-Public-Key (P2PK) | 130-char hex | ECDSA uncompressed pubkey |
+| 2 | Pay-to-Public-Key-Hash Uncomp (P2PKH) | `1…` (33–34 chars) | hash160(uncompressed pubkey) |
+| 3 | Pay-to-Public-Key-Hash Comp (P2PKH) | `1…` (33–34 chars) | hash160(compressed pubkey) |
+| 4 | Pay-to-Script-Hash (P2SH) | `3…` (34 chars) | hash160(P2WPKH redeemScript) |
+| 5 | Pay-to-Witness-Public-Key-Hash (P2WPKH) | `bc1q…` (42 chars) | bech32 v0, hash160(comp pubkey) |
+| 6 | Pay-to-Witness-Script-Hash (P2WSH) | `bc1q…` (62 chars) | bech32 v0, sha256(1-of-1 multisig witnessScript) |
+| 7 | Pay-to-Tap-Root (P2TR) | `bc1p…` (62 chars) | bech32m v1, Schnorr x-only pubkey |
 
 #### `POST /api/wallet-lab/record`
 - **Runtime:** Node.js
@@ -126,7 +138,7 @@ The **Wallet Lab** is a cryptography education tool that demonstrates how Bitcoi
 | :--- | :--- | :--- |
 | `phrase_hash` | TEXT UNIQUE | SHA-256(phrase) — dedup key |
 | `phrase` | TEXT | Actual phrase (educational context) |
-| `addresses` | JSONB | All 5 derived address types |
+| `addresses` | JSONB | All 7 derived address types |
 | `tx_count` | INTEGER | Total TXs found |
 | `total_received_btc` | NUMERIC(20,8) | Lifetime received |
 | `balance_btc` | NUMERIC(20,8) | Current balance (triggers alert) |
