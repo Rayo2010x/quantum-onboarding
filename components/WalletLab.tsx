@@ -92,6 +92,12 @@ export default function WalletLab() {
         }).catch(() => {/* silently ignore clipboard errors */});
     }, []);
 
+    // Display helper: show first 4 + last 4 chars to avoid label/value collision
+    const truncateAddr = useCallback((addr: string): string => {
+        return addr.length > 12 ? `${addr.slice(0, 4)}...${addr.slice(-4)}` : addr;
+    }, []);
+
+
     const runScan = useCallback(async () => {
         const trimmed = phrase.trim();
         if (!trimmed) {
@@ -292,13 +298,13 @@ export default function WalletLab() {
 
                                 {(
                                     [
-                                        { id: 'wl-pubkey',  label: '0. Pay-to-Public-Key (P2PK)',              value: derived.pubkey_hex,    delay: '0ms' },
-                                        { id: 'wl-leg-unc', label: '1. Legacy Uncomp. (P2PKH)',               value: derived.legacy_uncomp, delay: '50ms' },
-                                        { id: 'wl-leg-c',   label: '2. Legacy Comp. (P2PKH)',                 value: derived.legacy_comp,   delay: '100ms' },
-                                        { id: 'wl-p2sh',    label: '3. Pay-to-Script-Hash (P2SH)',            value: derived.p2sh,          delay: '150ms' },
-                                        { id: 'wl-bech32',  label: '4. Pay-to-Witness-Public-Key-Hash (P2WPKH)', value: derived.bech32,     delay: '200ms' },
-                                        { id: 'wl-p2wsh',   label: '5. Pay-to-Witness-Script-Hash (P2WSH)',  value: derived.p2wsh,         delay: '250ms' },
-                                        { id: 'wl-p2tr',    label: '6. Pay-to-Tap-Root (P2TR)',              value: derived.p2tr,          delay: '300ms' },
+                                        { id: 'wl-pubkey',  label: '1. Pay-to-Public-Key (P2PK)',                    value: derived.pubkey_hex,    delay: '0ms' },
+                                        { id: 'wl-leg-unc', label: '2. Pay-to-Public-Key-Hash (P2PKH) Uncomp',       value: derived.legacy_uncomp, delay: '50ms' },
+                                        { id: 'wl-leg-c',   label: '3. Pay-to-Public-Key-Hash (P2PKH) Comp',         value: derived.legacy_comp,   delay: '100ms' },
+                                        { id: 'wl-p2sh',    label: '4. Pay-to-Script-Hash (P2SH)',                   value: derived.p2sh,          delay: '150ms' },
+                                        { id: 'wl-bech32',  label: '5. Pay-to-Witness-Public-Key-Hash (P2WPKH)',     value: derived.bech32,        delay: '200ms' },
+                                        { id: 'wl-p2wsh',   label: '6. Pay-to-Witness-Script-Hash (P2WSH)',          value: derived.p2wsh,         delay: '250ms' },
+                                        { id: 'wl-p2tr',    label: '7. Pay-to-Tap-Root (P2TR)',                      value: derived.p2tr,          delay: '300ms' },
                                     ] as const
                                 ).map(({ id, label, value, delay }) => (
                                     <div key={id} className={styles.addrRow} style={{ animationDelay: delay }}>
@@ -308,7 +314,7 @@ export default function WalletLab() {
                                             title={value}
                                             onClick={() => copyValue(value, id)}
                                         >
-                                            {value}
+                                            {truncateAddr(value)}
                                         </span>
                                         <button
                                             className={`${styles.copyBtn} ${copiedId === id ? styles.copyBtnCopied : ''}`}
