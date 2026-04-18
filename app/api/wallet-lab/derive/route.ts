@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getPublicKey } from '@noble/secp256k1';
+import { schnorr } from '@noble/secp256k1';
 import { sha256 } from '@noble/hashes/sha2.js';
 import { ripemd160 } from '@noble/hashes/legacy.js';
-import { base58check, bech32 } from '@scure/base';
+import { base58check, bech32, bech32m } from '@scure/base';
 
 // ── Runtime: Node.js ───────────────────────────────────────────────────
 export const runtime = 'nodejs';
@@ -29,11 +30,16 @@ function encodeBase58Check(version: number, payload: Uint8Array): string {
     return base58check(sha256).encode(versionedPayload);
 }
 
-function encodeBech32Segwit(witnessProgram: Uint8Array): string {
-    // bech32 from @scure/base has .encode(prefix, words)
-    // For P2WPKH (witness v0), prepend witnessVersion=0 after converting to 5-bit words
+/** Encode a witness-v0 program (P2WPKH or P2WSH) using bech32. */
+function encodeBech32V0(witnessProgram: Uint8Array): string {
     const words = bech32.toWords(witnessProgram);
     return bech32.encode('bc', [0, ...words]);
+}
+
+/** Encode a witness-v1 program (P2TR) using bech32m. */
+function encodeBech32V1(witnessProgram: Uint8Array): string {
+    const words = bech32m.toWords(witnessProgram);
+    return bech32m.encode('bc', [1, ...words]);
 }
 
 function toHex(bytes: Uint8Array): string {
@@ -70,10 +76,26 @@ function deriveAddresses(phrase: string): Record<string, string> {
     redeemScript.set(h160comp, 2);
     const p2sh = encodeBase58Check(0x05, hash160(redeemScript));
 
-    // 4. Native SegWit P2WPKH bech32 (bc1q…)
-    const bech32Addr = encodeBech32Segwit(h160comp);
+    // 4. Native SegWit P2WPKH (bc1q…, 42 chars) — witness v0, single sig
+    const p2wpkh = encodeBech32V0(h160comp);
 
-    // 5. P2PK scripthash for mempool.space scripthash API
+    // 5. Native SegWit P2WSH (bc1q…, 62 chars) — witness v0, multisig
+    //    Witness script: OP_1 (0x51) || PUSH33 (0x21) || compressed_pubkey || OP_1 (0x51) || OP_CHECKMULTISIG (0xae)
+    //    This is a standard 1-of-1 P2WSH used here for educational demonstration.
+    const witnessScript = new Uint8Array(1 + 1 + pubCompBytes.length + 1 + 1);
+    witnessScript[0] = 0x51; // OP_1
+    witnessScript[1] = 0x21; // PUSH 33 bytes
+    witnessScript.set(pubCompBytes, 2);
+    witnessScript[2 + pubCompBytes.length]     = 0x51; // OP_1
+    witnessScript[2 + pubCompBytes.length + 1] = 0xae; // OP_CHECKMULTISIG
+    const p2wsh = encodeBech32V0(sha256(witnessScript));
+
+    // 6. Pay-to-Taproot P2TR (bc1p…, 62 chars) — witness v1, Schnorr
+    //    The output key is the x-only 32-byte Schnorr public key (no tweaking for simplicity).
+    const xOnlyPubKey = schnorr.getPublicKey(privBytes);
+    const p2tr = encodeBech32V1(xOnlyPubKey);
+
+    // 7. P2PK scripthash for mempool.space scripthash API
     //    P2PK script = OP_PUSHDATA(65) || uncompressed_pubkey || OP_CHECKSIG
     const p2pkScript = new Uint8Array(1 + pubUncompBytes.length + 1);
     p2pkScript[0] = 0x41;
@@ -92,7 +114,9 @@ function deriveAddresses(phrase: string): Record<string, string> {
         legacy_uncomp:   legacyUncomp,
         legacy_comp:     legacyComp,
         p2sh:            p2sh,
-        bech32:          bech32Addr,
+        bech32:          p2wpkh,
+        p2wsh:           p2wsh,
+        p2tr:            p2tr,
     };
 }
 

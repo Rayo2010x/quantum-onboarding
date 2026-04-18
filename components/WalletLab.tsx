@@ -11,6 +11,8 @@ interface DeriveResult {
     legacy_comp: string;
     p2sh: string;
     bech32: string;
+    p2wsh: string;
+    p2tr: string;
 }
 
 type MempoolStatus = 'idle' | 'loading' | 'empty' | 'has-data' | 'error';
@@ -29,6 +31,8 @@ interface MempoolResults {
     legacyComp:  MempoolData;
     p2sh:        MempoolData;
     bech32:      MempoolData;
+    p2wsh:       MempoolData;
+    p2tr:        MempoolData;
 }
 
 const INITIAL_MEMPOOL: MempoolResults = {
@@ -37,6 +41,8 @@ const INITIAL_MEMPOOL: MempoolResults = {
     legacyComp:   { status: 'idle' },
     p2sh:         { status: 'idle' },
     bech32:       { status: 'idle' },
+    p2wsh:        { status: 'idle' },
+    p2tr:         { status: 'idle' },
 };
 
 // ── SHA-256 via WebCrypto (browser — needed for phrase_hash sent to /record) ──
@@ -122,6 +128,8 @@ export default function WalletLab() {
                 legacyComp:   { status: 'loading' },
                 p2sh:         { status: 'loading' },
                 bech32:       { status: 'loading' },
+                p2wsh:        { status: 'loading' },
+                p2tr:         { status: 'loading' },
             });
 
             const base = 'https://mempool.space/api';
@@ -138,6 +146,10 @@ export default function WalletLab() {
             const p2shData      = await queryAddress(`${base}/address/${deriveData.p2sh}`);
             await delay(150);
             const bech32Data    = await queryAddress(`${base}/address/${deriveData.bech32}`);
+            await delay(150);
+            const p2wshData     = await queryAddress(`${base}/address/${deriveData.p2wsh}`);
+            await delay(150);
+            const p2trData      = await queryAddress(`${base}/address/${deriveData.p2tr}`);
 
             setMempool({
                 pubkey:       pubkeyData,
@@ -145,10 +157,12 @@ export default function WalletLab() {
                 legacyComp:   legCompData,
                 p2sh:         p2shData,
                 bech32:       bech32Data,
+                p2wsh:        p2wshData,
+                p2tr:         p2trData,
             });
 
             // Step 4: If any address has blockchain activity, record it server-side
-            const allResults = [pubkeyData, legUncompData, legCompData, p2shData, bech32Data];
+            const allResults = [pubkeyData, legUncompData, legCompData, p2shData, bech32Data, p2wshData, p2trData];
             const totalTxCount = allResults.reduce((sum, r) => sum + (r.txCount ?? 0), 0);
 
             if (totalTxCount > 0) {
@@ -192,7 +206,7 @@ export default function WalletLab() {
                     Bitcoin <em className={styles.heroEmphasis}>Wallet</em> Lab
                 </h2>
                 <p className={styles.heroSub}>
-                    Explore how the five Bitcoin address types are derived from
+                    Explore how seven Bitcoin address types are derived from
                     a passphrase and query their on-chain history live.
                 </p>
             </div>
@@ -278,11 +292,13 @@ export default function WalletLab() {
 
                                 {(
                                     [
-                                        { id: 'wl-pubkey',  label: '0. PubKey (P2PK)',   value: derived.pubkey_hex,    delay: '0ms' },
-                                        { id: 'wl-leg-unc', label: '1. Legacy Uncomp.',  value: derived.legacy_uncomp, delay: '50ms' },
-                                        { id: 'wl-leg-c',   label: '2. Legacy Comp.',   value: derived.legacy_comp,   delay: '100ms' },
-                                        { id: 'wl-p2sh',    label: '3. P2SH (3…)',       value: derived.p2sh,          delay: '150ms' },
-                                        { id: 'wl-bech32',  label: '4. Native SegWit',   value: derived.bech32,        delay: '200ms' },
+                                        { id: 'wl-pubkey',  label: '0. Pay-to-Public-Key (P2PK)',              value: derived.pubkey_hex,    delay: '0ms' },
+                                        { id: 'wl-leg-unc', label: '1. Legacy Uncomp. (P2PKH)',               value: derived.legacy_uncomp, delay: '50ms' },
+                                        { id: 'wl-leg-c',   label: '2. Legacy Comp. (P2PKH)',                 value: derived.legacy_comp,   delay: '100ms' },
+                                        { id: 'wl-p2sh',    label: '3. Pay-to-Script-Hash (P2SH)',            value: derived.p2sh,          delay: '150ms' },
+                                        { id: 'wl-bech32',  label: '4. Pay-to-Witness-Public-Key-Hash (P2WPKH)', value: derived.bech32,     delay: '200ms' },
+                                        { id: 'wl-p2wsh',   label: '5. Pay-to-Witness-Script-Hash (P2WSH)',  value: derived.p2wsh,         delay: '250ms' },
+                                        { id: 'wl-p2tr',    label: '6. Pay-to-Tap-Root (P2TR)',              value: derived.p2tr,          delay: '300ms' },
                                     ] as const
                                 ).map(({ id, label, value, delay }) => (
                                     <div key={id} className={styles.addrRow} style={{ animationDelay: delay }}>
@@ -317,7 +333,9 @@ export default function WalletLab() {
                                             { key: 'legacyUncomp' as const, label: '1. Legacy Uncomp.' },
                                             { key: 'legacyComp'   as const, label: '2. Legacy Comp.' },
                                             { key: 'p2sh'         as const, label: '3. P2SH' },
-                                            { key: 'bech32'       as const, label: '4. Native SegWit' },
+                                            { key: 'bech32'       as const, label: '4. P2WPKH' },
+                                            { key: 'p2wsh'        as const, label: '5. P2WSH' },
+                                            { key: 'p2tr'         as const, label: '6. P2TR' },
                                         ]
                                     ).map(({ key, label }) => {
                                         const data = mempool[key];
