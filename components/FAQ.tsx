@@ -4,7 +4,10 @@ import styles from './FAQ.module.css';
 export default function FAQ({ dict }: { dict: any }) {
     const faqs = [
         { q: dict.q1, a: dict.a1 },
-        { q: dict.q2, a: dict.a2 }
+        { q: dict.q2, a: dict.a2 },
+        { q: dict.q3, a: dict.a3 },
+        { q: dict.q4, a: dict.a4 },
+        { q: dict.q5, a: dict.a5 }
     ];
 
     // JSON-LD FAQPage schema — enables FAQ rich results in Google Search.

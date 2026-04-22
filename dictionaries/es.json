@@ -6,48 +6,50 @@
         "description": "No es un juego de azar. Es un experimento criptográfico de BTC provablemente justo que financia la seguridad de Bitcoin."
     },
     "manifesto": {
-        "title": "El Manifiesto Cuántico",
-        "content": "La visión de Satoshi Nakamoto requiere defensa contra las amenazas del mañana. Usamos micro-transacciones para estresar Lightning Network, mientras financiamos la investigación en criptografía resistente a ataques cuánticos."
-    },
-    "l1_l2": {
-        "title": "Bóveda Bitcoin L1 vs Bolsillo Lightning LN",
-        "l1": "Bitcoin Capa 1 (L1) es la bóveda. Lenta, costosa, pero inmutable.",
-        "l2": "Lightning Network (LN) es tu billetera de bolsillo. Instantánea, increíblemente barata, perfecta para usar BTC."
+        "title": "El Trilema de Bitcoin bajo la Migración Post-Cuántica",
+        "content": "Seguridad, Descentralización y Escalabilidad. La transición a la criptografía post-cuántica fuerza un compromiso. Aunque aumenta la seguridad contra los CRQC, las firmas más grandes reducen la escalabilidad y amenazan la descentralización. La Espada de Damocles pende sobre nosotros, y la transición es urgente."
     },
     "wallets": {
-        "title": "Billeteras (Wallets) Lightning Recomendadas para BTC",
-        "muun": "Muun Wallet: Ideal para principiantes. Cuidado con altas comisiones si la red Bitcoin (L1) está saturada.",
-        "phoenix": "Phoenix Wallet: Excelente opción no-custodial. Perfecta para usuarios de BTC en mercados emergentes.",
-        "wos": "Wallet of Satoshi: Custodial pero la más fácil para empezar. Úsala solo con montos pequeños."
+        "title": "Billeteras Bitcoin L1/L2 Recomendadas",
+        "intro": "Bitcoin Capa 1 (L1) es la bóveda inmutable, mientras que Lightning Network (L2) es tu billetera de bolsillo instantánea. Recomendamos billeteras que manejan ambas capas sin problemas y cuentan con escaneo de QR para depósitos y retiros.",
+        "macadamia": "Macadamia Wallet: Una billetera Cashu/Lightning para iOS diseñada por Christoph Ono (Germany's Best Kept Secret). Excelente para operaciones L2 instantáneas con escaneo de QR.",
+        "zeus": "Zeus: Una potente billetera no-custodial para usuarios avanzados. Maneja transacciones L1 y L2 a través de tu propio nodo o LSP integrado, con soporte completo para QR.",
+        "blink": "Blink Wallet: La forma más fácil de empezar con Lightning y L1. Una billetera favorita de la comunidad con funcionalidad de doble capa perfecta y escaneo de QR."
     },
     "faq": {
         "title": "Preguntas Frecuentes de Seguridad",
-        "q1": "¿Es esto un casino?",
-        "a1": "No. Es un mecanismo de stress-test diseñado para extraer entropía verificable y financiar investigación open-source.",
-        "q2": "¿Cómo es justo?",
-        "a2": "Usamos la red Drand para una aleatoriedad provable y verificable. El hash es transparente."
+        "q1": "¿Qué es el Día Q y cómo amenaza a Bitcoin?",
+        "a1": "El Día Q es el momento estimado (potencialmente para 2029) en el que los ordenadores cuánticos podrán ejecutar el algoritmo de Shor con suficiente eficiencia para romper la criptografía de curva elíptica de 256 bits, derivando claves privadas desde claves públicas expuestas.",
+        "q2": "¿Qué direcciones de Bitcoin están en mayor riesgo?",
+        "a2": "Las direcciones que no hashean sus claves públicas. Esto incluye las direcciones originales Pay-to-Public-Key (P2PK) (que contienen 1.7M BTC) y las direcciones modernas Pay-to-Taproot (P2TR).",
+        "q3": "¿Cuál es la diferencia entre exposición Permanente y a Corto Plazo?",
+        "a3": "La exposición permanente significa que un atacante cuántico tiene tiempo ilimitado offline para descifrar una clave pública visible. La exposición a corto plazo (como en SegWit) significa que la clave solo es visible durante la ventana de ~10 minutos de transmisión de la transacción.",
+        "q4": "¿Cómo protege BIP-360 (P2MR) a la red?",
+        "a4": "BIP-360 introduce Pay-to-Merkle-Root, una versión endurecida de Taproot que soporta algoritmos Post-Cuánticos (como Dilithium), manteniendo las claves ocultas de ataques cuánticos a largo plazo.",
+        "q5": "¿Qué es el controvertido 'Congelamiento' de BIP-361?",
+        "a5": "BIP-361 es una propuesta para eventualmente invalidar las firmas antiguas ECDSA/Schnorr a nivel de consenso para prevenir el robo cuántico. Sin embargo, 'congela' efectivamente las monedas inactivas tempranas, desatando un debate sobre la inmutabilidad."
     },
     "quantum_shield": {
-        "title": "Soberanía Cuántica: Hoja de Ruta para el Futuro de Bitcoin",
-        "intro": "Si bien Bitcoin Capa 1 sigue siendo la Reserva de Valor Descentralizada definitiva, se enfrenta a un desafío técnico: la aparición del algoritmo de Shor en ordenadores cuánticos suficientemente potentes. Nuestra misión en QuantumBTC es investigar y documentar los caminos para una transición segura.",
-        "title1": "1. La Amenaza: ECDSA y la Exposición de Claves Públicas",
-        "desc1": "La firma digital actual de Bitcoin (ECDSA) se basa en la dureza del problema del logaritmo discreto de curva elíptica. Un ordenador cuántico podría derivar una clave privada a partir de una pública en segundos.",
-        "bullet1_1": "La mayoría de las direcciones BTC modernas (Native SegWit) ocultan la clave pública tras un hash, proporcionando una protección base hasta que el dueño gasta desde ella.",
-        "bullet1_2": "Vulnerabilidad: Las direcciones antiguas que comienzan con '1' y aquellas que ya han enviado fondos están en riesgo directo al tener sus claves públicas expuestas.",
-        "title2": "2. El Dilema del Fork: Softfork vs. Hardfork",
-        "desc2": "Estamos investigando dos caminos principales para la protección del protocolo y la migración de valor:",
-        "softfork_title": "Softfork (Actualización PQ-SegWit)",
-        "softfork_desc": "Añadir nuevos tipos de scripts que soporten firmas Post-Cuánticas (PQ) como Dilithium o SPHINCS+. Esto mantiene la continuidad de la blockchain pero requiere que los usuarios 'blindar' manualmente sus fondos moviéndolos a estas nuevas direcciones.",
-        "hardfork_title": "Hardfork (Snapshot Nativo PQ)",
-        "hardfork_desc": "Un reinicio no compatible con versiones anteriores. Esto usaría un snapshot de la cadena antigua y un mecanismo de 'Burn and Mint' (Quemado y Emisión) en la nueva rama protegida por PQ. Esto es políticamente complejo pero técnicamente más limpio.",
-        "title3": "3. La Capa LN: Una Puerta de Enlace Experimental",
-        "strategy": "Es vital entender una verdad técnica: La Lightning Network (LN) solo es tan segura como la L1. Si la criptografía de Bitcoin se rompe, el mecanismo de 'Justicia' de LN también falla. Sin embargo, LN actúa como nuestro laboratorio ágil. Su naturaleza modular permite a los nodos probar despliegues 'canario' de firmas estándar de NIST (como Dilithium) en canales privados, aportando los datos necesarios para actualizar la Bóveda de la L1.",
+        "title": "La Espada de Damocles: La Fragilidad Cuántica de Bitcoin",
+        "intro": "La aparición de Computadoras Cuánticas Criptográficamente Relevantes (CRQC) capaces de ejecutar el algoritmo de Shor pone en riesgo las firmas ECDSA y Schnorr de Bitcoin. Debemos actuar antes de la fecha límite del 'Día Q' en 2029.",
+        "title1": "1. El Ciclo de Vida Criptográfico y la Exposición Permanente",
+        "desc1": "No todas las direcciones enfrentan el mismo riesgo. Las direcciones P2PK (como las de Satoshi) y P2TR (Taproot) codifican la clave pública directamente en la blockchain. Esto significa una exposición permanente a un atacante cuántico que tiene tiempo ilimitado para derivar la clave privada offline.",
+        "bullet1_1": "Las direcciones hasheadas (P2PKH, P2SH, SegWit) solo revelan la clave pública durante la transmisión de la transacción, creando una ventana de exposición 'A Corto Plazo' mucho más difícil de atacar.",
+        "bullet1_2": "Vulnerabilidad: La reutilización de direcciones convierte la exposición a corto plazo en un riesgo permanente. Genera siempre una nueva dirección para cada transacción.",
+        "title2": "2. Riesgo Sistémico: El Umbral de Exposición del 34%",
+        "desc2": "Aproximadamente 1,7 millones de BTC permanecen en direcciones P2PK permanentemente expuestas. Con la adopción de Taproot y la reutilización de direcciones, más del 34% del suministro circulante tiene claves públicas expuestas. Un compromiso aquí representa un riesgo de mercado sistémico.",
+        "softfork_title": "BIP-360: Pay-to-Merkle-Root (P2MR)",
+        "softfork_desc": "Un Taproot conservador y 'endurecido' diseñado para facilitar algoritmos de Criptografía Post-Cuántica (PQC) como Dilithium. Oculta la clave mientras no se gasta, neutralizando los ataques a largo plazo.",
+        "hardfork_title": "BIP-361: El Marco de Migración y Sunset",
+        "hardfork_desc": "Un cronograma en fases para invalidar firmas heredadas (ECDSA/Schnorr) y proteger las monedas inactivas. Una decisión de gobernanza controvertida entre la inmutabilidad y la supervivencia de la red.",
+        "title3": "3. Análisis del Riesgo a Corto Plazo vs Permanente",
+        "strategy": "Mientras que la exposición a corto plazo requiere que un CRQC realice un 'ataque a velocidad de mempool' en menos de 10 minutos, la exposición permanente deja miles de millones de dólares vulnerables en este momento. La transición a P2MR es el primer paso.",
         "title4": "¿Cómo puedes proteger tus BTC hoy?",
-        "step1": "Migra a Native SegWit (Bech32) para ocultar tus claves públicas tras un hash.",
-        "step2": "Evita estrictamente la reutilización de direcciones. No debe filtrarse ningún metadato a posibles atacantes.",
-        "step3": "Mantén tus fondos en almacenamiento en frío a largo plazo, pero usa LN para tu experimentación diaria.",
-        "step4": "Apoya el stress-test en quantumbtc.dev para financiar directamente la investigación de código abierto.",
-        "conclusion": "La seguridad de Bitcoin es un proceso iterativo. Al construir el escudo hoy, aseguramos que el legado de Satoshi dure por siglos."
+        "step1": "Migra tus fondos de direcciones antiguas P2PK o reutilizadas a direcciones nuevas Native SegWit (Bech32).",
+        "step2": "Evita estrictamente la reutilización de direcciones para mantener tu clave pública hasheada hasta el momento de gastar.",
+        "step3": "Prepárate para la transición a P2MR manteniéndote informado sobre los desarrollos de BIP-360.",
+        "step4": "Apoya la investigación de código abierto para asegurar una migración post-cuántica sin problemas.",
+        "conclusion": "El despliegue de BIP-360 demuestra que la tecnología está lista; la única variable restante es el consenso social de la red."
     },
     "footer": {
         "rights": "© 2026 QuantumBTC. Apoya la investigación post-cuántica.",

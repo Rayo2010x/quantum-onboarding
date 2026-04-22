@@ -3,14 +3,15 @@ import styles from './WalletTierList.module.css';
 
 export default function WalletTierList({ dict }: { dict: any }) {
     const wallets = [
-        { name: 'Muun Wallet', tier: 'S', type: 'Self-Custody', desc: dict.muun, url: 'https://muun.com' },
-        { name: 'Phoenix', tier: 'A', type: 'Self-Custody', desc: dict.phoenix, url: 'https://phoenix.acinq.co' },
-        { name: 'Wallet of Satoshi', tier: 'B', type: 'Custodial', desc: dict.wos, url: 'https://walletofsatoshi.com' }
+        { name: 'Macadamia Wallet', tier: 'S', type: 'Cashu / LN', desc: dict.macadamia, url: 'https://macadamia.cash' },
+        { name: 'Zeus', tier: 'A', type: 'Self-Custody', desc: dict.zeus, url: 'https://zeusln.com' },
+        { name: 'Blink Wallet', tier: 'A', type: 'Community', desc: dict.blink, url: 'https://www.blink.sv' }
     ];
 
     return (
         <section className={styles.tierContainer}>
             <h2 className={styles.title}>{dict.title}</h2>
+            <p className={styles.walletDesc} style={{ marginBottom: '2rem', textAlign: 'center' }}>{dict.intro}</p>
             <div className={styles.list}>
                 {wallets.map((wallet) => (
                     <a key={wallet.name} href={wallet.url} target="_blank" rel="noopener noreferrer" className={styles.walletItem}>

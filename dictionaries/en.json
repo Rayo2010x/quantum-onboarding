@@ -6,48 +6,50 @@
         "description": "Not a game of chance. A provably fair cryptographic BTC experiment funding the future of Bitcoin's post-quantum security."
     },
     "manifesto": {
-        "title": "The Quantum Manifesto",
-        "content": "Satoshi Nakamoto's vision requires defense against tomorrow's threats. We are using micro-transactions to stress-test the Lightning Network, while funding research into quantum-resistant cryptography."
-    },
-    "l1_l2": {
-        "title": "Bitcoin L1 Vault vs Lightning LN Pocket",
-        "l1": "Bitcoin Layer 1 (L1) is the vault. Slow, expensive, but immutable.",
-        "l2": "Lightning Network (LN) is your pocket wallet. Instant, extremely cheap, perfect for everyday BTC payments."
+        "title": "Bitcoin's Trilemma Under Post-Quantum Migration",
+        "content": "Security, Decentralization, and Scalability. The transition to post-quantum cryptography forces a trade-off. While security increases against CRQCs, larger signature sizes reduce scalability and threaten decentralization. The Sword of Damocles hangs over us, and a transition is urgent."
     },
     "wallets": {
-        "title": "Recommended Bitcoin Lightning Wallets (LN)",
-        "muun": "Muun Wallet: Best for beginners. Beware of high hidden fees if the Bitcoin network (L1) is congested.",
-        "phoenix": "Phoenix Wallet: Excellent non-custodial LN option. Perfect for BTC users in emerging markets.",
-        "wos": "Wallet of Satoshi: Custodial but easiest for immediate onboarding. Only store small BTC amounts."
+        "title": "Recommended L1/L2 Bitcoin Wallets",
+        "intro": "Bitcoin Layer 1 (L1) is the immutable vault, while Lightning Network (L2) acts as your instant pocket wallet. We recommend wallets that handle both layers seamlessly and feature QR scanning for deposits and withdrawals.",
+        "macadamia": "Macadamia Wallet: An iOS Cashu/Lightning wallet designed by Christoph Ono (Germany's Best Kept Secret). Excellent for instant L2 operations with QR scanning.",
+        "zeus": "Zeus: A powerful non-custodial wallet for power users. Handles L1 and L2 transactions via your own node or integrated LSP, featuring full QR support.",
+        "blink": "Blink Wallet: The easiest onboarding for Lightning and L1. A community-favorite wallet with perfect dual-layer functionality and QR scanning."
     },
     "faq": {
         "title": "Security FAQ",
-        "q1": "Is this a casino?",
-        "a1": "No. This is a stress-taste mechanism designed to extract verifiable entropy and fund open-source research.",
-        "q2": "How is it fair?",
-        "a2": "We use the Drand network for provable, verifiable randomness. The hash is transparent."
+        "q1": "What is Q-Day and how does it threaten Bitcoin?",
+        "a1": "Q-Day is the estimated moment (potentially by 2029) when quantum computers can run Shor's algorithm efficiently enough to break 256-bit elliptic curve cryptography, allowing them to derive private keys from exposed public keys.",
+        "q2": "Which Bitcoin addresses are most at risk?",
+        "a2": "Addresses that do not hash their public keys. This includes the original Pay-to-Public-Key (P2PK) addresses (holding 1.7M BTC) and modern Pay-to-Taproot (P2TR) addresses.",
+        "q3": "What is the difference between Permanent and Short-Term exposure?",
+        "a3": "Permanent exposure means a quantum attacker has unlimited offline time to crack a visible public key. Short-Term exposure (like in SegWit) means the key is only visible during the ~10-minute transaction broadcast window.",
+        "q4": "How does BIP-360 (P2MR) protect the network?",
+        "a4": "BIP-360 introduces Pay-to-Merkle-Root, a hardened version of Taproot that supports Post-Quantum algorithms (like Dilithium), keeping keys hidden from long-range quantum attacks.",
+        "q5": "What is the controversial BIP-361 \"Freeze\"?",
+        "a5": "BIP-361 is a proposal to eventually invalidate old ECDSA/Schnorr signatures at the consensus level to prevent quantum theft. However, it effectively 'freezes' early dormant coins, sparking a debate over immutability."
     },
     "quantum_shield": {
-        "title": "Quantum Sovereignty: The Roadmap to Bitcoin's Future",
-        "intro": "While Bitcoin Layer 1 remains the ultimate Decentralized Store of Value, it faces a technical challenge: the emergence of Shor's algorithm on sufficiently large quantum computers. Our mission at QuantumBTC is to research and document the paths for a secure transition.",
-        "title1": "1. The Threat: ECDSA and Public Key Exposure",
-        "desc1": "Bitcoin's current digital signature (ECDSA) relies on the hardness of the Elliptic Curve Discrete Logarithm Problem. A quantum computer could derive a private key from a public key in seconds.",
-        "bullet1_1": "Most modern BTC addresses (Native SegWit) hide the public key behind a hash, providing baseline protection until the owner spends from it.",
-        "bullet1_2": "Vulnerability: Reused addresses, or old P2PK (Pay-to-Public-Key) addresses like Satoshi's original 1M BTC, have their public keys exposed and are the primary targets.",
-        "title2": "2. The Fork Dilemma: Softfork vs. Hardfork",
-        "desc2": "We are researching two main paths for protocol protection and value migration:",
-        "softfork_title": "Softfork (PQ-SegWit Upgrade)",
-        "softfork_desc": "Adding new script types supporting Post-Quantum (PQ) signatures like Dilithium or SPHINCS+. This maintains blockchain continuity but requires users to manually 'shield' their funds by moving them to these new addresses.",
-        "hardfork_title": "Hardfork (Native PQ Snapshot)",
-        "hardfork_desc": "A non-backward compatible reboot. This would use a snapshot of the old chain and a 'Burn and Mint' mechanism on the new PQ-protected branch. This is politically complex but technically cleaner.",
-        "title3": "3. The LN Layer: An Experimental Gateway",
-        "strategy": "It's important to understand a technical truth: The Lightning Network (LN) is only as secure as the L1. If Bitcoin's underlying cryptography is broken, the 'Justice' mechanism of LN also fails. However, LN acts as our agile laboratory. Its modular nature allows node operators to test 'canary' deployments of NIST-standardized signatures (like Dilithium) within private channels, providing the real-world data needed to safely upgrade the L1 Bóveda.",
+        "title": "The Sword of Damocles: Bitcoin's Quantum Fragility",
+        "intro": "The emergence of Cryptographically Relevant Quantum Computers (CRQC) capable of executing Shor's algorithm puts Bitcoin's ECDSA and Schnorr signatures at risk. We must act before the 2029 'Q-Day' timeline.",
+        "title1": "1. The Cryptographic Lifecycle & Permanent Exposure",
+        "desc1": "Not all addresses face the same risk. P2PK (like Satoshi's coins) and P2TR (Taproot) addresses encode the public key directly on the ledger. This means permanent exposure to a quantum attacker who has unlimited time to derive the private key offline.",
+        "bullet1_1": "Hashed addresses (P2PKH, P2SH, SegWit) only reveal the public key during transaction broadcast, creating a much harder 'Short-Term' exposure window.",
+        "bullet1_2": "Vulnerability: Address reuse turns short-term exposure into permanent risk. Always generate a new address for every transaction.",
+        "title2": "2. Systemic Risk: The 34% Exposure Threshold",
+        "desc2": "Approximately 1.7 million BTC remain in permanently exposed P2PK addresses. With the growing adoption of Taproot and address reuse, over 34% of the circulating supply has exposed public keys. A compromise here represents a systemic market risk.",
+        "softfork_title": "BIP-360: Pay-to-Merkle-Root (P2MR)",
+        "softfork_desc": "A conservative 'hardened' Taproot designed to facilitate Post-Quantum Cryptography (PQC) algorithms like Dilithium. It hides the key while unspent, neutralizing long-range attacks.",
+        "hardfork_title": "BIP-361: The Migration and Sunset Framework",
+        "hardfork_desc": "A phased timeline to invalidate legacy signatures (ECDSA/Schnorr) to protect dormant coins. A controversial governance decision between immutability and network survival.",
+        "title3": "3. Analyzing Short-Term vs Permanent Risk",
+        "strategy": "While short-term exposure requires a CRQC to perform a 'mempool-speed attack' in under 10 minutes, permanent exposure leaves billions of dollars vulnerable right now. Transitioning to P2MR is the first step.",
         "title4": "How can you protect your BTC today?",
-        "step1": "Migrate to Native SegWit (Bech32) to hide your public keys behind a hash.",
-        "step2": "Strictly avoid address reuse. No metadata should be leaked to potential attackers.",
-        "step3": "Keep your funds in cold storage for long term, but use LN for your daily experimentation.",
-        "step4": "Support the stress-test at quantumbtc.dev to directly fund open-source research.",
-        "conclusion": "Bitcoin's security is an iterative process. By building the shield today, we ensure Satoshi's legacy lasts for centuries."
+        "step1": "Migrate funds from old P2PK or reused addresses to fresh Native SegWit (Bech32) addresses.",
+        "step2": "Strictly avoid address reuse to keep your public key hashed until the moment of spending.",
+        "step3": "Prepare for the P2MR transition by staying informed on BIP-360 developments.",
+        "step4": "Support open-source research and testing to ensure a smooth post-quantum migration.",
+        "conclusion": "The deployment of BIP-360 proves the technology is ready; the only remaining variable is the social consensus of the network."
     },
     "footer": {
         "rights": "© 2026 QuantumBTC. Support Post-Quantum Research.",

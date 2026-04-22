@@ -13,7 +13,7 @@ import WalletLab from "../components/WalletLab";
 import dict from "../dictionaries/en.json";
 
 export default function Home() {
-    const [activeTab, setActiveTab] = useState<TabId>('overview');
+    const [activeTab, setActiveTab] = useState<TabId>('trilemma');
 
     return (
         <>
@@ -22,27 +22,16 @@ export default function Home() {
 
             <main className={styles.main}>
 
-                {/* ── Tab 1: Overview ──────────────────────────── */}
+                {/* ── Tab 1: The Trilemma ──────────────────────────── */}
                 <div
-                    id="panel-overview"
+                    id="panel-trilemma"
                     role="tabpanel"
-                    aria-labelledby="tab-overview"
-                    hidden={activeTab !== 'overview'}
+                    aria-labelledby="tab-trilemma"
+                    hidden={activeTab !== 'trilemma'}
                     className={styles.tabPanel}
                 >
                     <BrandHero />
                     <Manifesto dict={dict.manifesto} />
-                </div>
-
-                {/* ── Tab 2: L1 / L2 ───────────────────────────── */}
-                <div
-                    id="panel-l1l2"
-                    role="tabpanel"
-                    aria-labelledby="tab-l1l2"
-                    hidden={activeTab !== 'l1l2'}
-                    className={styles.tabPanel}
-                >
-                    <VisualGuide dict={dict.l1_l2} />
                 </div>
 
                 {/* ── Tab 3: Wallets ────────────────────────────── */}
