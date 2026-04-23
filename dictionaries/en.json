@@ -10,11 +10,14 @@
         "content": "Security, Decentralization, and Scalability. The transition to post-quantum cryptography forces a trade-off. While security increases against CRQCs, larger signature sizes reduce scalability and threaten decentralization. The Sword of Damocles hangs over us, and a transition is urgent."
     },
     "wallets": {
-        "title": "Recommended L1/L2 Bitcoin Wallets",
-        "intro": "Bitcoin Layer 1 (L1) is the immutable vault, while Lightning Network (L2) acts as your instant pocket wallet. We recommend wallets that handle both layers seamlessly and feature QR scanning for deposits and withdrawals.",
-        "macadamia": "Macadamia Wallet: An iOS Cashu/Lightning wallet designed by Christoph Ono (Germany's Best Kept Secret). Excellent for instant L2 operations with QR scanning.",
-        "zeus": "Zeus: A powerful non-custodial wallet for power users. Handles L1 and L2 transactions via your own node or integrated LSP, featuring full QR support.",
-        "blink": "Blink Wallet: The easiest onboarding for Lightning and L1. A community-favorite wallet with perfect dual-layer functionality and QR scanning."
+        "title": "Recommended LN Bitcoin Wallets",
+        "intro": "Bitcoin Layer 1 (L1) is the immutable vault, while the Lightning Network (L2) acts as your instant pocket wallet. We recommend using the following LN wallets exclusively for day-to-day transactions with small amounts. While some of these apps can also process L1 transactions, for securely storing significant amounts on L1 you should always use dedicated hardware cold wallets such as Trezor, Coldcard, or BitBox02.",
+        "macadamia": "Macadamia Wallet: iOS. A privacy-focused Cashu/Lightning wallet designed by Christoph Ono (Germany's Best Kept Secret). Excellent for instant L2 operations with QR scanning, but requires external swaps for L1.",
+        "zeus": "Zeus: iOS / Android. A powerful non-custodial wallet for power users. Handles L1 and L2 transactions via your own node or integrated LSPs, featuring full QR support.",
+        "blink": "Blink Wallet: iOS / Android / Web. The easiest onboarding for Lightning and L1. A community-favorite wallet with perfect dual-layer functionality and QR scanning.",
+        "muun": "Muun Wallet: iOS / Android. Self-custodial wallet that unifies L1 and L2 balances using Submarine Swaps. Handles both seamlessly with QR scanning, but beware of high hidden fees if the L1 network is congested.",
+        "phoenix": "Phoenix: iOS / Android. Excellent non-custodial LN option that uses 'Splicing' to handle channels transparently. Handles both L1 and L2 transactions with QR support.",
+        "wos": "Wallet of Satoshi: iOS / Android. Custodial but the absolute easiest for immediate onboarding. Handles L1 and L2 seamlessly with QR support. Only store small BTC amounts."
     },
     "faq": {
         "title": "Security FAQ",

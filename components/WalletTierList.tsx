@@ -4,8 +4,11 @@ import styles from './WalletTierList.module.css';
 export default function WalletTierList({ dict }: { dict: any }) {
     const wallets = [
         { name: 'Macadamia Wallet', tier: 'S', type: 'Cashu / LN', desc: dict.macadamia, url: 'https://macadamia.cash' },
+        { name: 'Muun Wallet', tier: 'S', type: 'Self-Custody', desc: dict.muun, url: 'https://muun.com' },
+        { name: 'Phoenix', tier: 'A', type: 'Self-Custody', desc: dict.phoenix, url: 'https://phoenix.acinq.co' },
         { name: 'Zeus', tier: 'A', type: 'Self-Custody', desc: dict.zeus, url: 'https://zeusln.com' },
-        { name: 'Blink Wallet', tier: 'A', type: 'Community', desc: dict.blink, url: 'https://www.blink.sv' }
+        { name: 'Blink Wallet', tier: 'A', type: 'Community', desc: dict.blink, url: 'https://www.blink.sv' },
+        { name: 'Wallet of Satoshi', tier: 'B', type: 'Custodial', desc: dict.wos, url: 'https://walletofsatoshi.com' }
     ];
 
     return (
