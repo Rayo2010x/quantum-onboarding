@@ -1,8 +1,8 @@
 # QL_Portal_Architecture — QuantumBTC Onboarding Portal
 
 > **ID:** QL_Portal_Architecture
-> **Version:** 1.3
-> **Last Updated:** 2026-04-17
+> **Version:** 1.4
+> **Last Updated:** 2026-04-22
 > **Status:** APPROVED
 
 ## 1. Overview
@@ -33,29 +33,27 @@ onboarding-portal/
 │   └── sitemap.ts          ← next-sitemap sitemap config
 ├── components/
 │   ├── TabNav.tsx          ← Sticky nav: tab bar on desktop, hamburger menu on mobile
-│   ├── BrandHero.tsx       ← Logo + Banner hero (Tab 1: Overview)
-│   ├── Hero.tsx            ← Original hero CTA section
-│   ├── Manifesto.tsx       ← "The Quantum Manifesto" card
-│   ├── VisualGuide.tsx     ← L1 vs L2 visual comparison
+│   ├── BrandHero.tsx       ← Logo + Banner hero (Tab 1)
+│   ├── Hero.tsx            ← Original hero CTA section (legacy)
+│   ├── Manifesto.tsx       ← "The Sword of Damocles" text + CTAs
 │   ├── WalletTierList.tsx  ← Recommended LN wallets
 │   ├── QuantumShielding.tsx← Quantum threat roadmap
 │   └── FAQ.tsx             ← Security FAQ
 ├── dictionaries/
-│   └── en.json             ← All UI text content (Single Source of Truth for copy)
+│   └── en.json             ← All UI text content (Single Source of Truth, English only)
 ├── public/
 │   ├── favicon.png         ← QuantumBTC logo (96×96)
 │   └── og-image.png        ← Open Graph banner (1200×630)
-└── next.config.js          ← Redirects (/en, /es → /)
+└── next.config.js          ← Next.js config
 ```
 
 ## 4. Tab Architecture
 
-The page is a **6-tab SPA** driven by React `useState` in `page.tsx`. `'use client'` is required.
+The page is a **5-tab SPA** driven by React `useState` in `page.tsx`. `'use client'` is required.
 
 | Tab ID | Label | Primary Component |
 | :--- | :--- | :--- |
-| `overview` | Overview | `BrandHero` + `Manifesto` |
-| `l1l2` | L1 / L2 | `VisualGuide` |
+| `trilemma` | The Sword of Damocles | `BrandHero` + `Manifesto` |
 | `wallets` | Wallets | `WalletTierList` |
 | `quantumshield` | QuantumShield | `QuantumShielding` |
 | `faq` | FAQ | `FAQ` |

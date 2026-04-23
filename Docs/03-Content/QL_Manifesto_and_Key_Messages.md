@@ -1,15 +1,15 @@
 # QL_Manifesto_and_Key_Messages — QuantumBTC Marketing Portal
 
 > **ID:** QL_Manifesto_and_Key_Messages
-> **Version:** 1.0
-> **Last Updated:** 2026-04-09
+> **Version:** 1.1
+> **Last Updated:** 2026-04-22
 > **Status:** APPROVED
 
 ## 1. The Quantum Manifesto
 
-> *"Satoshi Nakamoto's vision requires defense against tomorrow's threats. We are using micro-transactions to stress-test the Lightning Network, while funding research into quantum-resistant cryptography."*
+> *"The emergence of quantum computing threatens Bitcoin’s core cryptography. Transitioning to post-quantum security is urgent, but it challenges Bitcoin's Trilemma: larger signatures reduce scalability and threaten decentralization. To solve this, the Lightning Network must become our agile laboratory. By participating in our LN Stress-Test, you actively fund and generate real-world data for the post-quantum migration."*
 
-This is the core manifesto statement displayed on the Overview tab of `learn.quantumbtc.dev`. It must remain concise, ethos-driven, and urgent.
+This is the core manifesto statement displayed on "The Sword of Damocles" tab of `learn.quantumbtc.dev`. It must remain concise, ethos-driven, and urgent.
 
 ## 2. Core Messages by Audience
 
