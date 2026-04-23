@@ -51,14 +51,6 @@ export default function BrandHero() {
                 <p className={styles.tagline}>
                     Securing Satoshi's Vision in the Quantum Era
                 </p>
-                <a
-                    href="https://quantumbtc.dev"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={styles.ctaButton}
-                >
-                    ⚡ Start the LN Stress-Test
-                </a>
             </div>
         </div>
     );

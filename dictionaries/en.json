@@ -6,8 +6,8 @@
         "description": "Not a game of chance. A provably fair cryptographic BTC experiment funding the future of Bitcoin's post-quantum security."
     },
     "manifesto": {
-        "title": "Bitcoin's Trilemma Under Post-Quantum Migration",
-        "content": "Security, Decentralization, and Scalability. The transition to post-quantum cryptography forces a trade-off. While security increases against CRQCs, larger signature sizes reduce scalability and threaten decentralization. The Sword of Damocles hangs over us, and a transition is urgent."
+        "title": "The Sword of Damocles",
+        "content": "The emergence of quantum computing threatens Bitcoin’s core cryptography. Transitioning to post-quantum security is urgent, but it challenges Bitcoin's Trilemma: larger signatures reduce scalability and threaten decentralization. To solve this, the Lightning Network must become our agile laboratory. By participating in our LN Stress-Test, you actively fund and generate real-world data for the post-quantum migration."
     },
     "wallets": {
         "title": "Recommended LN Bitcoin Wallets",

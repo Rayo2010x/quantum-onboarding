@@ -10,7 +10,7 @@ interface Tab {
 }
 
 const TABS: Tab[] = [
-    { id: 'trilemma',       label: 'The Trilemma',  icon: '⚖️' },
+    { id: 'trilemma',       label: 'The Sword of Damocles',  icon: '⚔️' },
     { id: 'wallets',       label: 'Wallets',        icon: '👛' },
     { id: 'quantumshield', label: 'QuantumShield',  icon: '🛡️' },
     { id: 'faq',           label: 'FAQ',            icon: '❓' },

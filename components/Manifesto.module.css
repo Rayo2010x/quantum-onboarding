@@ -44,4 +44,44 @@
     font-size: 1.25rem;
     line-height: 1.8;
     color: #d4d4d8;
+    margin-bottom: 2rem;
+}
+
+.buttonGroup {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.ctaButton {
+    display: inline-block;
+    padding: 0.875rem 2.25rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #0a0a0a;
+    background: var(--primary);
+    border-radius: 9999px;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 20px rgba(247, 147, 26, 0.3);
+}
+
+.ctaButton:hover {
+    transform: translateY(-2px);
+    background: var(--primary-hover);
+    box-shadow: 0 0 30px rgba(247, 147, 26, 0.5);
+}
+
+.ctaButton.secondary {
+    background: transparent;
+    color: var(--primary);
+    border: 1px solid var(--primary);
+    box-shadow: none;
+}
+
+.ctaButton.secondary:hover {
+    background: rgba(247, 147, 26, 0.1);
+    box-shadow: 0 0 20px rgba(247, 147, 26, 0.15);
 }

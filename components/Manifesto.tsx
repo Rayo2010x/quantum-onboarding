@@ -12,6 +12,14 @@ export default function Manifesto({ dict }: { dict: any }) {
                 </div>
                 <h2 className={styles.title}>{dict.title}</h2>
                 <p className={styles.content}>{dict.content}</p>
+                <div className={styles.buttonGroup}>
+                    <a href="https://github.com/Rayo2010x/the_sword_of_damocles" target="_blank" rel="noopener noreferrer" className={`${styles.ctaButton} ${styles.secondary}`}>
+                        🛡️ Read 'The Sword of Damocles'
+                    </a>
+                    <a href="https://quantumbtc.dev" target="_blank" rel="noopener noreferrer" className={styles.ctaButton}>
+                        ⚡ Start the LN Stress-Test
+                    </a>
+                </div>
             </div>
         </section>
     );
