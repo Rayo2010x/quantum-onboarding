@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuantumBTC — Bitcoin Transaction Simulator: L1 & L2</title>
+    <meta name="description" content="Interactive Bitcoin transaction simulator covering Layer 1 on-chain and Layer 2 Lightning Network, Ecash, Submarine Swaps, and more. Built by QuantumBTC.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #0a0a0a;
+            --bg-panel: #111111;
+            --bg-card: #1a1a1a;
+            --bg-card-hover: #222222;
+            --primary: #f7931a;
+            --primary-hover: #e08210;
+            --primary-glow: rgba(247, 147, 26, 0.15);
+            --accent: #8b5cf6;
+            --accent-glow: rgba(139, 92, 246, 0.15);
+            --text-main: #ededed;
+            --text-muted: #888888;
+            --text-dim: #555555;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --border: #2a2a2a;
+            --border-light: #333333;
+            --cat-0: #e2e8f0;
+            --cat-1: #38bdf8;
+            --cat-2: #06b6d4;
+            --cat-3: #f7931a;
+            --cat-4: #a78bfa;
+            --cat-5: #94a3b8;
+            --infra-mempool: #ef4444;
+            --infra-blockchain: #e2e8f0;
+            --infra-lsp: #38bdf8;
+            --infra-ln: #3b82f6;
+            --infra-mint: #a78bfa;
+            --infra-swap: #f59e0b;
+            --infra-custodial: #64748b;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+        body { background-color: var(--bg-main); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+
+        /* ===== SIDEBAR ===== */
+        #sidebar {
+            width: 320px; min-width: 320px; background-color: var(--bg-panel); border-right: 1px solid var(--border);
+            display: flex; flex-direction: column; padding: 20px; overflow-y: auto; z-index: 10;
+        }
+        .brand-header {
+            display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
+            padding-bottom: 15px; border-bottom: 1px solid var(--border);
+        }
+        .brand-header .logo-icon {
+            width: 36px; height: 36px; background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+        }
+        .brand-header h1 { font-size: 1rem; font-weight: 800; letter-spacing: -0.04em; }
+        .brand-header h1 span { color: var(--primary); }
+        .brand-header .subtitle { font-size: 0.7rem; color: var(--text-muted); font-weight: 400; letter-spacing: 0; }
+
+        h2 { font-size: 0.85rem; font-weight: 700; margin: 18px 0 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .control-group { margin-bottom: 12px; }
+        .control-group label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px; font-weight: 500; }
+
+        .toggle-container {
+            display: flex; align-items: center; justify-content: space-between;
+            background: var(--bg-card); padding: 12px; border-radius: 10px; border: 1px solid var(--border);
+        }
+        .toggle-label { font-size: 0.85rem; font-weight: 600; }
+        .switch { position: relative; display: inline-block; width: 46px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; inset: 0; background-color: #333; transition: .3s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background: #fff; transition: .3s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--danger); }
+        input:checked + .slider:before { transform: translateX(22px); }
+        .toggle-hint { font-size: 0.7rem; color: var(--text-dim); margin-top: 4px; }
+
+        select, input[type="text"], input[type="number"] {
+            width: 100%; padding: 9px 12px; border-radius: 8px; border: 1px solid var(--border);
+            background-color: var(--bg-card); color: var(--text-main); font-size: 0.85rem; outline: none;
+            transition: border-color 0.2s; font-family: inherit;
+        }
+        select:focus, input:focus { border-color: var(--primary); }
+        button {
+            width: 100%; padding: 10px; border-radius: 8px; border: none;
+            background-color: var(--primary); color: #000; font-weight: 700; font-size: 0.85rem;
+            cursor: pointer; transition: all 0.2s; font-family: inherit; margin-top: 4px;
+        }
+        button:hover { background-color: var(--primary-hover); transform: translateY(-1px); }
+        button.secondary { background: transparent; border: 1px solid var(--border); color: var(--text-main); }
+        button.secondary:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-glow); }
+        button:disabled { background-color: #1a1a1a; color: #444; cursor: not-allowed; transform: none; }
+
+        .sub-option { display: none; margin-top: 6px; }
+        .sub-option.visible { display: block; }
+
+        .wallet-list-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 8px 12px; background: var(--bg-card); border-radius: 8px; margin-bottom: 5px;
+            border-left: 3px solid var(--primary); font-size: 0.8rem; transition: background 0.2s;
+        }
+        .wallet-list-item:hover { background: var(--bg-card-hover); }
+        .wl-cat-0 { border-left-color: var(--cat-0); } .wl-cat-1 { border-left-color: var(--cat-1); }
+        .wl-cat-2 { border-left-color: var(--cat-2); } .wl-cat-3 { border-left-color: var(--cat-3); }
+        .wl-cat-4 { border-left-color: var(--cat-4); } .wl-cat-5 { border-left-color: var(--cat-5); }
+        .delete-btn { background: transparent; color: var(--danger); width: auto; padding: 2px 8px; font-size: 0.75rem; border: none; margin: 0; }
+        .delete-btn:hover { background: rgba(239,68,68,0.1); }
+
+        /* ===== MAP CONTAINER ===== */
+        #map-container { flex-grow: 1; position: relative; display: flex; flex-direction: column; overflow: hidden; }
+
+        #transaction-hub {
+            background: var(--bg-panel); border-bottom: 1px solid var(--border); padding: 12px 20px;
+            display: flex; align-items: center; justify-content: space-between; gap: 15px; min-height: 68px; z-index: 10;
+        }
+        .hub-info { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
+        .hub-title { font-size: 0.7rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px; font-weight: 600; }
+        .hub-value {
+            font-family: 'Courier New', monospace; font-size: 0.85rem; color: var(--primary);
+            background: var(--primary-glow); padding: 5px 10px; border-radius: 6px;
+            max-width: 500px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        #hub-action-zone { display: flex; gap: 8px; flex-shrink: 0; }
+        #hub-action-zone button { width: auto; padding: 8px 16px; margin: 0; font-size: 0.8rem; }
+
+        /* ===== CANVAS ===== */
+        #canvas-area {
+            flex-grow: 1; position: relative; overflow: hidden;
+            background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        /* ===== INFRASTRUCTURE NODES ===== */
+        .infra-node {
+            position: absolute; background: rgba(17,17,17,0.9); backdrop-filter: blur(8px);
+            border: 2px dashed #333; border-radius: 14px; padding: 14px 12px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.5); z-index: 3;
+            cursor: move; user-select: none; transition: box-shadow 0.3s;
+        }
+        .infra-node:hover { box-shadow: 0 4px 25px rgba(0,0,0,0.7); }
+        .infra-node .icon { font-size: 1.6rem; margin-bottom: 4px; pointer-events: none; }
+        .infra-node header { font-weight: 700; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; pointer-events: none; }
+        .infra-node .infra-desc { font-size: 0.65rem; color: var(--text-dim); margin-top: 2px; pointer-events: none; max-width: 120px; }
+
+        #node-mempool { border-color: var(--infra-mempool); color: var(--infra-mempool); }
+        #node-blockchain { border-color: var(--infra-blockchain); color: var(--infra-blockchain); }
+        #node-lsp { border-color: var(--infra-lsp); color: var(--infra-lsp); }
+        #node-ln { border-color: var(--infra-ln); color: var(--infra-ln); }
+        #node-mint { border-color: var(--infra-mint); color: var(--infra-mint); }
+        #node-swap { border-color: var(--infra-swap); color: var(--infra-swap); }
+        #node-custodial { border-color: var(--infra-custodial); color: var(--infra-custodial); }
+
+        /* ===== WALLET TOKENS ===== */
+        .wallet-token {
+            position: absolute; width: 96px; height: 96px; background: var(--bg-card);
+            border: 2px solid var(--primary); border-radius: 50%;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: move; box-shadow: 0 4px 15px rgba(0,0,0,0.4); z-index: 5; user-select: none;
+            transition: box-shadow 0.2s, border-color 0.2s;
+        }
+        .wallet-token:hover { box-shadow: 0 0 20px rgba(247,147,26,0.3); }
+        .wallet-token.selected { border-color: var(--success); box-shadow: 0 0 20px rgba(34,197,94,0.4); }
+        .wt-cat-0 { border-color: var(--cat-0); } .wt-cat-1 { border-color: var(--cat-1); }
+        .wt-cat-2 { border-color: var(--cat-2); } .wt-cat-3 { border-color: var(--cat-3); }
+        .wt-cat-4 { border-color: var(--cat-4); } .wt-cat-5 { border-color: var(--cat-5); }
+        .wallet-token .badge {
+            position: absolute; top: -4px; right: -4px; min-width: 22px; height: 22px; padding: 0 5px;
+            background: var(--primary); color: #000; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 0.65rem; pointer-events: none;
+        }
+        .wallet-token .w-name { font-size: 0.75rem; font-weight: 700; text-align: center; max-width: 76px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; pointer-events: none; }
+        .wallet-token .w-balance { font-size: 0.7rem; color: var(--success); font-family: 'Courier New', monospace; margin-top: 1px; pointer-events: none; }
+
+        /* ===== MODALS ===== */
+        .wallet-modal {
+            position: absolute; background: var(--bg-panel); border: 1px solid var(--border);
+            border-radius: 14px; width: 270px; padding: 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+            z-index: 200; display: none; flex-direction: column; gap: 8px;
+        }
+        .wallet-modal h3 { font-size: 0.85rem; font-weight: 700; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+        .modal-section-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px; margin-top: 4px; }
+        .modal-detail { font-size: 0.75rem; color: var(--text-dim); }
+        .modal-close { position: absolute; top: 10px; right: 12px; cursor: pointer; color: var(--text-muted); font-size: 0.85rem; font-weight: 700; }
+        .modal-close:hover { color: var(--text-main); }
+        .wallet-modal button { font-size: 0.8rem; padding: 8px; }
+        .wallet-modal input { padding: 7px 10px; font-size: 0.8rem; }
+
+        .code-type-tag {
+            display: inline-block; font-size: 0.65rem; font-weight: 700; padding: 2px 6px;
+            border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .tag-dynamic { background: rgba(34,197,94,0.15); color: var(--success); }
+        .tag-static { background: rgba(139,92,246,0.15); color: var(--accent); }
+
+        /* ===== SVG LAYER ===== */
+        #svg-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; }
+        .connection-line { stroke: var(--border); stroke-width: 2; fill: none; }
+        .connection-line.active {
+            stroke: var(--primary); stroke-width: 3; stroke-dasharray: 12 6;
+            animation: dashMove 0.8s linear infinite; filter: drop-shadow(0 0 4px rgba(247,147,26,0.4));
+        }
+        @keyframes dashMove { to { stroke-dashoffset: -18; } }
+
+        /* ===== STEP BUBBLES ===== */
+        .step-bubble {
+            position: absolute; background: var(--success); color: #000; padding: 8px 12px;
+            border-radius: 8px; font-size: 0.8rem; max-width: 200px; font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 100; opacity: 0; transform: translateY(8px);
+            transition: opacity 0.3s, transform 0.3s; pointer-events: none;
+        }
+        .step-bubble.visible { opacity: 1; transform: translateY(0); }
+        .step-bubble.warning-bubble { background: var(--danger); color: #fff; }
+
+        /* ===== PLAYBACK PANEL ===== */
+        #playback-panel {
+            background: var(--bg-panel); border-top: 1px solid var(--border); padding: 10px 20px;
+            display: flex; align-items: center; justify-content: space-between; z-index: 10; min-height: 56px;
+        }
+        #step-text { font-size: 0.85rem; font-weight: 500; flex: 1; min-width: 0; line-height: 1.4; }
+        #step-text strong { color: var(--primary); }
+        .playback-controls { display: flex; gap: 8px; flex-shrink: 0; }
+        .playback-controls button { width: 100px; margin: 0; }
+
+        /* ===== LEGEND ===== */
+        #legend-box {
+            position: absolute; bottom: 12px; right: 12px; background: rgba(17,17,17,0.92);
+            backdrop-filter: blur(8px); padding: 12px 14px; border-radius: 10px;
+            border: 1px solid var(--border); font-size: 0.7rem; z-index: 6; pointer-events: none;
+        }
+        .legend-title { font-weight: 700; margin-bottom: 6px; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.65rem; }
+        .legend-item { display: flex; align-items: center; gap: 6px; margin-bottom: 3px; color: var(--text-muted); }
+        .legend-color { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            #sidebar { width: 260px; min-width: 260px; padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== SIDEBAR ===== -->
+    <div id="sidebar">
+        <div class="brand-header">
+            <div class="logo-icon">₿</div>
+            <div>
+                <h1><span>Quantum</span>BTC Lab</h1>
+                <div class="subtitle">L1 & L2 Transaction Simulator</div>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <div class="toggle-container">
+                <span class="toggle-label">L1 Congested</span>
+                <label class="switch">
+                    <input type="checkbox" id="congestion-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <p class="toggle-hint">Raises L1 mining fees from ~1k to ~15k sats. Affects Submarine Swap costs.</p>
+        </div>
+
+        <h2>Create Wallet</h2>
+        <div class="control-group">
+            <label>Wallet Name</label>
+            <input type="text" id="wallet-name-input" placeholder="e.g. Alice's Phone">
+        </div>
+        <div class="control-group">
+            <label>Technology Category</label>
+            <select id="wallet-cat-select">
+                <option value="0">0 — L1 Bitcoin (Pure On-Chain)</option>
+                <option value="1">1 — Native Lightning (Auto-LSP)</option>
+                <option value="2">2 — Own-Node Lightning (Advanced)</option>
+                <option value="3">3 — Hybrid On-Chain/Swaps (Muun Style)</option>
+                <option value="4">4 — Ecash / Chaumian Mint (Cashu Style)</option>
+                <option value="5">5 — Pure Custodial (Centralized)</option>
+            </select>
+        </div>
+        <div class="control-group sub-option" id="sub-cat-group">
+            <label>Node Mode</label>
+            <select id="sub-cat-select">
+                <option value="a">2a — Remote Node (Sovereign Routing)</option>
+                <option value="b">2b — Embedded Node (LSP-Assisted)</option>
+            </select>
+        </div>
+        <button id="add-wallet-btn">Add to Board</button>
+
+        <h2>Wallets on Board</h2>
+        <div id="sidebar-wallet-list"></div>
+
+        <div style="margin-top:auto; padding-top:15px; border-top:1px solid var(--border); text-align:center;">
+            <span style="font-size:0.65rem; color:var(--text-dim);">QuantumBTC — In Satoshi We Trust. In Code We Verify.</span>
+        </div>
+    </div>
+
+    <!-- ===== MAP CONTAINER ===== -->
+    <div id="map-container">
+
+        <div id="transaction-hub">
+            <div class="hub-info">
+                <span class="hub-title" id="hub-state-title">Broadcast Channel Open</span>
+                <div class="hub-value" id="hub-code-display">Waiting for input... No active code in global memory.</div>
+            </div>
+            <div id="hub-action-zone"></div>
+        </div>
+
+        <div id="canvas-area">
+            <svg id="svg-layer">
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto" markerUnits="strokeWidth">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="var(--primary)" />
+                    </marker>
+                </defs>
+                <path id="flow-path" class="connection-line" d="" marker-end="url(#arrowhead)" />
+            </svg>
+
+            <div class="infra-node" id="node-mempool" style="top:8%; left:12%; width:130px;">
+                <div class="icon">⏳</div>
+                <header>L1 Mempool</header>
+                <div class="infra-desc">Pending Transactions</div>
+            </div>
+
+            <div class="infra-node" id="node-blockchain" style="top:8%; left:55%; width:155px;">
+                <div class="icon">⛓️</div>
+                <header>Bitcoin Blockchain</header>
+                <div class="infra-desc">Layer 1 Final Settlement</div>
+            </div>
+
+            <div class="infra-node" id="node-lsp" style="top:40%; left:5%; width:130px;">
+                <div class="icon">📡</div>
+                <header>LSP Node</header>
+                <div class="infra-desc">Lightning Service Provider</div>
+            </div>
+
+            <div class="infra-node" id="node-ln" style="top:40%; left:35%; width:155px;">
+                <div class="icon">⚡</div>
+                <header>Lightning Network</header>
+                <div class="infra-desc">L2 Payment Channel Routing</div>
+            </div>
+
+            <div class="infra-node" id="node-mint" style="top:40%; left:72%; width:140px;">
+                <div class="icon">🏦</div>
+                <header>Chaumian Mint</header>
+                <div class="infra-desc">Ecash Issuer & LN Gateway</div>
+            </div>
+
+            <div class="infra-node" id="node-swap" style="top:76%; left:12%; width:135px;">
+                <div class="icon">🔄</div>
+                <header>Swap Provider</header>
+                <div class="infra-desc">On-Chain ↔ Lightning Bridge</div>
+            </div>
+
+            <div class="infra-node" id="node-custodial" style="top:76%; left:55%; width:155px;">
+                <div class="icon">🖥️</div>
+                <header>Custodial Servers</header>
+                <div class="infra-desc">Corporate DB & LN Infra</div>
+            </div>
+
+            <div id="step-bubble-1" class="step-bubble"></div>
+
+            <div id="legend-box">
+                <div class="legend-title">Wallet Categories</div>
+                <div class="legend-item"><div class="legend-color" style="background:var(--cat-0);"></div>0. L1 On-Chain</div>
+                <div class="legend-item"><div class="legend-color" style="background:var(--cat-1);"></div>1. Native LN (Auto-LSP)</div>
+                <div class="legend-item"><div class="legend-color" style="background:var(--cat-2);"></div>2. Own-Node LN</div>
+                <div class="legend-item"><div class="legend-color" style="background:var(--cat-3);"></div>3. Hybrid Swaps</div>
+                <div class="legend-item"><div class="legend-color" style="background:var(--cat-4);"></div>4. Ecash Mint</div>
+                <div class="legend-item"><div class="legend-color" style="background:var(--cat-5);"></div>5. Custodial</div>
+            </div>
+        </div>
+
+        <div id="playback-panel">
+            <div id="step-text">ℹ️ Click a wallet on the board to generate a receive code, or click to send if a code is already active.</div>
+            <div class="playback-controls">
+                <button id="btn-prev" class="secondary" disabled>⏮ Back</button>
+                <button id="btn-next" disabled>Next ⏭</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+// =====================================================================
+// CONFIGURATION
+// =====================================================================
+const CAT_LABELS = {
+    0: 'L1 Bitcoin (On-Chain)',
+    1: 'Native Lightning (Auto-LSP)',
+    '2a': 'Own-Node LN (Sovereign)',
+    '2b': 'Own-Node LN (LSP-Assisted)',
+    3: 'Hybrid Swaps (Muun Style)',
+    4: 'Ecash / Chaumian Mint',
+    5: 'Pure Custodial'
+};
+
+const CAT_EXAMPLES = {
+    0: 'Sparrow, Electrum',
+    1: 'Phoenix, Breez',
+    '2a': 'Zeus (Remote), Zap',
+    '2b': 'Zeus (Embedded)',
+    3: 'Muun',
+    4: 'Macadamia, Cashu.me, Fedi',
+    5: 'Wallet of Satoshi, Strike'
+};
+
+const DEFAULT_POSITIONS = {
+    0: [{x:58, y:22}],
+    1: [{x:8, y:56}, {x:22, y:56}],
+    '2a': [{x:36, y:58}],
+    '2b': [{x:28, y:58}],
+    3: [{x:15, y:60}],
+    4: [{x:74, y:58}, {x:86, y:58}],
+    5: [{x:58, y:72}, {x:72, y:72}]
+};
+
+// =====================================================================
+// STATE
+// =====================================================================
+let wallets = [];
+let idCounter = 0;
+let selectedWalletId = null;
+let activeCode = null;
+let txSteps = [];
+let stepIdx = -1;
+let isDragging = false;
+let dragEl = null;
+let dragStart = {mx:0, my:0, ex:0, ey:0};
+let catCounters = {0:0, 1:0, '2a':0, '2b':0, 3:0, 4:0, 5:0};
+
+// =====================================================================
+// INITIALIZATION
+// =====================================================================
+document.addEventListener('DOMContentLoaded', () => {
+    createWallet('Alice (Phoenix)', 1, null);
+    createWallet('Bob (Muun)', 3, null);
+    createWallet('Charlie (Cashu)', 4, null);
+    createWallet('Treasury (Cold)', 0, null);
+
+    document.getElementById('add-wallet-btn').addEventListener('click', handleAddWallet);
+    document.getElementById('btn-next').addEventListener('click', nextStep);
+    document.getElementById('btn-prev').addEventListener('click', prevStep);
+    document.getElementById('wallet-cat-select').addEventListener('change', (e) => {
+        document.getElementById('sub-cat-group').classList.toggle('visible', e.target.value === '2');
+    });
+
+    setupDragAndDrop();
+});
+
+// =====================================================================
+// WALLET CRUD
+// =====================================================================
+function getEffCat(w) {
+    if (w.category === 2) return '2' + (w.subCategory || 'a');
+    return w.category;
+}
+
+function createWallet(name, category, subCat) {
+    category = parseInt(category);
+    const effCat = category === 2 ? '2' + (subCat || 'a') : category;
+    const slots = DEFAULT_POSITIONS[effCat] || DEFAULT_POSITIONS[category] || [{x:50, y:50}];
+    const counter = catCounters[effCat] || 0;
+    const slot = slots[counter % slots.length];
+    catCounters[effCat] = counter + 1;
+    const offset = Math.floor((counter) / slots.length) * 5;
+
+    const wallet = {
+        id: idCounter++,
+        name: name || `Wallet ${idCounter}`,
+        category: category,
+        subCategory: category === 2 ? (subCat || 'a') : null,
+        balance: 100000,
+        x: slot.x + offset * 0.5,
+        y: slot.y + offset * 1.0
+    };
+    wallets.push(wallet);
+    renderAll();
+}
+
+function handleAddWallet() {
+    const nameEl = document.getElementById('wallet-name-input');
+    const catEl = document.getElementById('wallet-cat-select');
+    const subEl = document.getElementById('sub-cat-select');
+    const cat = parseInt(catEl.value);
+    createWallet(nameEl.value.trim(), cat, cat === 2 ? subEl.value : null);
+    nameEl.value = '';
+}
+
+function deleteWallet(id) {
+    wallets = wallets.filter(w => w.id !== id);
+    if (selectedWalletId === id) selectedWalletId = null;
+    resetSimulation();
+    renderAll();
+}
+
+function renderAll() {
+    renderTokens();
+    renderSidebarList();
+}
+
+function renderSidebarList() {
+    const container = document.getElementById('sidebar-wallet-list');
+    container.innerHTML = '';
+    wallets.forEach(w => {
+        const ec = getEffCat(w);
+        const item = document.createElement('div');
+        item.className = `wallet-list-item wl-cat-${w.category}`;
+        item.innerHTML = `<span><strong>[#${ec}]</strong> ${w.name}</span><button class="delete-btn" onclick="deleteWallet(${w.id})">✕</button>`;
+        container.appendChild(item);
+    });
+}
+
+function renderTokens() {
+    const canvas = document.getElementById('canvas-area');
+    canvas.querySelectorAll('.wallet-token, .wallet-modal').forEach(el => el.remove());
+
+    wallets.forEach(w => {
+        const token = document.createElement('div');
+        token.className = `wallet-token wt-cat-${w.category}`;
+        if (selectedWalletId === w.id) token.classList.add('selected');
+        token.style.left = `${w.x}%`;
+        token.style.top = `${w.y}%`;
+        token.id = `token-${w.id}`;
+        const ec = getEffCat(w);
+        token.innerHTML = `
+            <div class="badge">${ec}</div>
+            <div class="w-name">${w.name}</div>
+            <div class="w-balance">${w.balance.toLocaleString()} sats</div>
+        `;
+        token.addEventListener('click', (e) => {
+            if (isDragging) return;
+            e.stopPropagation();
+            selectWallet(w.id);
+        });
+        canvas.appendChild(token);
+
+        // Create modal
+        const modal = document.createElement('div');
+        modal.className = 'wallet-modal';
+        modal.id = `modal-${w.id}`;
+        modal.style.left = `${Math.min(w.x + 2, 75)}%`;
+        modal.style.top = `${Math.min(w.y + 11, 70)}%`;
+        buildModalContent(modal, w);
+        canvas.appendChild(modal);
+    });
+}
+
+// =====================================================================
+// MODAL SYSTEM (SEND / RECEIVE)
+// =====================================================================
+function selectWallet(id) {
+    closeModals();
+    selectedWalletId = id;
+    renderTokens();
+    if (stepIdx === -1) {
+        const modal = document.getElementById(`modal-${id}`);
+        if (modal) modal.style.display = 'flex';
+    }
+}
+
+function closeModals() {
+    document.querySelectorAll('.wallet-modal').forEach(m => m.style.display = 'none');
+}
+
+function buildModalContent(modal, wallet) {
+    modal.innerHTML = `<div class="modal-close" onclick="closeModals()">✕</div>`;
+
+    const heading = document.createElement('h3');
+    heading.textContent = wallet.name;
+    modal.appendChild(heading);
+
+    const catLabel = document.createElement('div');
+    catLabel.className = 'modal-detail';
+    catLabel.textContent = `Cat ${getEffCat(wallet)}: ${CAT_LABELS[getEffCat(wallet)]}`;
+    modal.appendChild(catLabel);
+
+    // If there's an active code from ANOTHER wallet -> show SEND options
+    if (activeCode && activeCode.creatorId !== wallet.id) {
+        buildSendOptions(modal, wallet);
+        return;
+    }
+
+    // If there's an active code from THIS wallet -> show cancel
+    if (activeCode && activeCode.creatorId === wallet.id) {
+        const info = document.createElement('div');
+        info.className = 'modal-detail';
+        info.style.color = 'var(--success)';
+        info.textContent = `Your [${activeCode.type}] code is active. Waiting for a sender to scan it.`;
+        modal.appendChild(info);
+        const btnCancel = document.createElement('button');
+        btnCancel.textContent = '✕ Cancel Code';
+        btnCancel.className = 'secondary';
+        btnCancel.addEventListener('click', () => { resetSimulation(); renderAll(); });
+        modal.appendChild(btnCancel);
+        return;
+    }
+
+    // No active code -> show RECEIVE options
+    buildReceiveOptions(modal, wallet);
+}
+
+function buildReceiveOptions(modal, wallet) {
+    const ec = getEffCat(wallet);
+    const label = document.createElement('div');
+    label.className = 'modal-section-label';
+    label.textContent = '── Receive ──';
+    modal.appendChild(label);
+
+    const amtLabel = document.createElement('label');
+    amtLabel.textContent = 'Amount (sats):';
+    amtLabel.style.cssText = 'font-size:0.75rem; color:var(--text-muted); margin-top:4px; display:block;';
+    modal.appendChild(amtLabel);
+
+    const amtInput = document.createElement('input');
+    amtInput.type = 'number';
+    amtInput.value = '2000';
+    amtInput.id = `amount-${wallet.id}`;
+    modal.appendChild(amtInput);
+
+    // L1 Address — Cat 0, Cat 3
+    if (ec === 0 || ec === 3) {
+        addReceiveButton(modal, wallet, 'L1', '📦 Bitcoin Address (bc1...)', 'Dynamic', 'One-time on-chain address');
+    }
+
+    // LN Invoice — All except Cat 0
+    if (ec !== 0) {
+        let lnLabel = '⚡ Lightning Invoice';
+        if (ec === 3) lnLabel += ' (via Swap)';
+        if (ec === 4) lnLabel += ' (via Mint)';
+        addReceiveButton(modal, wallet, 'LN', lnLabel, 'Dynamic', 'Single-use BOLT11 invoice');
+    }
+
+    // LNURL / Lightning Address — Cat 1, 2b, 4, 5
+    if (ec === 1 || ec === '2b' || ec === 4 || ec === 5) {
+        let lnurlLabel = '📧 Lightning Address';
+        if (ec === 4) lnurlLabel += ' (via Mint)';
+        addReceiveButton(modal, wallet, 'LNURL', lnurlLabel, 'Static', 'Reusable LNURL-pay endpoint');
+    }
+
+    // Ecash Token — Cat 4 only
+    if (ec === 4) {
+        addReceiveButton(modal, wallet, 'ECASH', '🪙 Ecash Token (Same Mint)', 'Static', 'Bearer token transfer — no Lightning needed');
+    }
+}
+
+function addReceiveButton(modal, wallet, type, label, tagType, hint) {
+    const wrapper = document.createElement('div');
+    wrapper.style.cssText = 'display:flex; flex-direction:column; gap:2px; margin-top:4px;';
+
+    const btn = document.createElement('button');
+    btn.className = 'secondary';
+    btn.innerHTML = `${label} <span class="code-type-tag tag-${tagType.toLowerCase()}">${tagType}</span>`;
+    btn.addEventListener('click', () => {
+        const amt = parseInt(document.getElementById(`amount-${wallet.id}`).value);
+        generateCode(wallet.id, type, amt);
+    });
+    wrapper.appendChild(btn);
+
+    const h = document.createElement('div');
+    h.className = 'modal-detail';
+    h.textContent = hint;
+    h.style.marginLeft = '8px';
+    wrapper.appendChild(h);
+
+    modal.appendChild(wrapper);
+}
+
+function buildSendOptions(modal, wallet) {
+    const ec = getEffCat(wallet);
+    const label = document.createElement('div');
+    label.className = 'modal-section-label';
+    label.textContent = '── Send ──';
+    modal.appendChild(label);
+
+    const creator = wallets.find(w => w.id === activeCode.creatorId);
+    const info = document.createElement('div');
+    info.className = 'modal-detail';
+    info.innerHTML = `Active code: <strong>[${activeCode.type}]</strong> ${activeCode.amount.toLocaleString()} sats<br>Destination: ${creator ? creator.name : 'Unknown'}`;
+    modal.appendChild(info);
+
+    // Check compatibility
+    const compatible = isPaymentCompatible(ec, activeCode.type);
+
+    if (!compatible.ok) {
+        const warn = document.createElement('div');
+        warn.className = 'modal-detail';
+        warn.style.color = 'var(--danger)';
+        warn.textContent = compatible.reason;
+        modal.appendChild(warn);
+        return;
+    }
+
+    if (compatible.note) {
+        const note = document.createElement('div');
+        note.className = 'modal-detail';
+        note.style.color = 'var(--warning)';
+        note.textContent = compatible.note;
+        modal.appendChild(note);
+    }
+
+    const btnPay = document.createElement('button');
+    btnPay.textContent = '⚡ Scan & Pay';
+    btnPay.addEventListener('click', () => startTransaction(wallet.id));
+    modal.appendChild(btnPay);
+}
+
+function isPaymentCompatible(payerEffCat, codeType) {
+    if (codeType === 'ECASH') {
+        if (payerEffCat === 4) return { ok: true, note: 'Same-Mint token transfer — instant, no fees.' };
+        return { ok: false, reason: 'Only Ecash wallets on the same Mint can pay Ecash tokens.' };
+    }
+    if (codeType === 'L1') {
+        if (payerEffCat === 0 || payerEffCat === 3) return { ok: true };
+        if (payerEffCat === 4) return { ok: true, note: 'Requires Melt → LN → Submarine Swap → On-Chain.' };
+        if (payerEffCat === 5) return { ok: true, note: 'Company handles the on-chain withdrawal.' };
+        return { ok: true, note: 'Requires Submarine Swap (LN → On-Chain).' };
+    }
+    // LN or LNURL
+    if (payerEffCat === 0) return { ok: true, note: 'Requires Reverse Submarine Swap (On-Chain → LN).' };
+    if (payerEffCat === 3) return { ok: true, note: 'Routed via Swap Provider (Submarine Swap).' };
+    if (payerEffCat === 4) return { ok: true, note: 'Ecash tokens will be melted at the Mint.' };
+    return { ok: true };
+}
+
+// =====================================================================
+// CODE GENERATION
+// =====================================================================
+function generateCode(walletId, type, amount) {
+    if (isNaN(amount) || amount <= 0) { alert('Please enter a valid amount in satoshis.'); return; }
+    const creator = wallets.find(w => w.id === walletId);
+    if (!creator) return;
+
+    const rand = Math.random().toString(36).substring(2, 15);
+    let code = '';
+    if (type === 'L1') code = `bc1p${rand}7xq360q77vjuu`;
+    else if (type === 'LN') code = `lnbc${amount}n1p${rand}qsp59x2...`;
+    else if (type === 'LNURL') code = `lnurl1dp68gurn8ghj7${rand}...`;
+    else if (type === 'ECASH') code = `cashuA${rand.toUpperCase()}...`;
+
+    activeCode = { type, amount, code, creatorId: walletId };
+
+    document.getElementById('hub-state-title').textContent = `Code Available (To: ${creator.name})`;
+    document.getElementById('hub-code-display').textContent = `[${type}] ${amount.toLocaleString()} sats: ${code}`;
+
+    closeModals();
+    renderAll();
+    document.getElementById('step-text').innerHTML = `📢 <strong>Receive code broadcast.</strong> Now click the wallet that will <strong>SEND</strong> (pay this code).`;
+}
+
+// =====================================================================
+// TRANSACTION ENGINE
+// =====================================================================
+function startTransaction(payerId) {
+    const payer = wallets.find(w => w.id === payerId);
+    const receiver = wallets.find(w => w.id === activeCode.creatorId);
+    if (!payer || !receiver) return;
+
+    const amount = activeCode.amount;
+    if (payer.balance < amount) {
+        alert(`Insufficient funds in ${payer.name}. Balance: ${payer.balance.toLocaleString()} sats, needed: ${amount.toLocaleString()} sats.`);
+        return;
+    }
+
+    closeModals();
+    const isCongested = document.getElementById('congestion-toggle').checked;
+    const pCat = getEffCat(payer);
+    const rCat = getEffCat(receiver);
+    const codeType = activeCode.type === 'LNURL' ? 'LN' : activeCode.type; // LNURL resolves to LN
+
+    // Calculate fees
+    const fees = calcFees(pCat, rCat, codeType, amount, isCongested);
+    const totalCost = amount + fees.total;
+
+    if (payer.balance < totalCost) {
+        alert(`Insufficient funds. Need ${totalCost.toLocaleString()} sats (${amount.toLocaleString()} + ${fees.total.toLocaleString()} fees). Balance: ${payer.balance.toLocaleString()} sats.`);
+        return;
+    }
+
+    txSteps = [];
+    stepIdx = 0;
+
+    // Step 0: Approval
+    txSteps.push({
+        text: buildApprovalText(pCat, codeType, amount, fees, isCongested),
+        bubble: '🔐 Approval',
+        interactive: true,
+        action: 'prompt',
+        path: null,
+        targetNode: `token-${payer.id}`
+    });
+
+    // Special: Ecash Same-Mint
+    if (codeType === 'ECASH') {
+        txSteps.push({
+            text: 'Your wallet transfers the Ecash token data to the recipient. The recipient submits these tokens to the Chaumian Mint to swap for fresh ones (double-spend prevention).',
+            bubble: '🪙 Token Swap',
+            path: [`token-${payer.id}`, 'node-mint']
+        });
+        txSteps.push({
+            text: 'The Mint validates the tokens, invalidates the old ones, and issues fresh tokens to the receiver. No Lightning Network involved — instant and private.',
+            bubble: '✅ Minted',
+            path: ['node-mint', `token-${receiver.id}`],
+            action: 'settle', payerId, receiverId: receiver.id, cost: totalCost, earn: amount
+        });
+        runStepEngine();
+        return;
+    }
+
+    // Build departure steps
+    txSteps.push(...buildDepartureSteps(payer, receiver, codeType, isCongested));
+
+    // Build arrival steps
+    txSteps.push(...buildArrivalSteps(payer, receiver, codeType, isCongested, amount, totalCost, payerId));
+
+    runStepEngine();
+}
+
+function calcFees(pCat, rCat, codeType, amount, congested) {
+    let mining = 0, routing = 0, swap = 0, mint = 0;
+
+    const needsOnChain = (codeType === 'L1') || (pCat === 0 && codeType === 'LN') || (pCat === 3 && codeType === 'LN' && congested);
+
+    if (needsOnChain) mining = congested ? 15000 : 1000;
+
+    if (codeType === 'LN' || codeType === 'LNURL') {
+        if (pCat === 0) { swap = Math.max(50, Math.floor(amount * 0.005)); routing = 2; }
+        else if (pCat === 1 || pCat === '2b') routing = 8;
+        else if (pCat === '2a') routing = 4;
+        else if (pCat === 3) { swap = congested ? Math.max(50, Math.floor(amount * 0.003)) : 0; routing = congested ? 0 : 2; }
+        else if (pCat === 4) { mint = 2; routing = 3; }
+        else if (pCat === 5) routing = 1;
+    }
+
+    if (codeType === 'L1' && pCat !== 0 && pCat !== 3 && pCat !== 5) {
+        swap = Math.max(50, Math.floor(amount * 0.004));
+        routing = 5;
+    }
+
+    return { mining, routing, swap, mint, total: mining + routing + swap + mint };
+}
+
+function buildApprovalText(pCat, codeType, amount, fees, congested) {
+    const feeStr = fees.total > 0 ? ` Estimated fees: ${fees.total.toLocaleString()} sats.` : '';
+
+    if (codeType === 'ECASH') return `Transfer Ecash tokens to another wallet on the same Mint? Amount: ${amount.toLocaleString()} sats. Instant and private.`;
+
+    if (codeType === 'L1') {
+        if (pCat === 0 || pCat === 3) return `Sign this on-chain transaction? Amount: ${amount.toLocaleString()} sats.${feeStr}`;
+        return `Submarine Swap required: Lightning funds will be converted to on-chain Bitcoin via a Swap Provider. Amount: ${amount.toLocaleString()} sats.${feeStr}`;
+    }
+
+    // LN
+    if (pCat === 0) return `Reverse Submarine Swap: Your on-chain BTC will be locked in an HTLC. A Swap Provider will pay the Lightning invoice. Amount: ${amount.toLocaleString()} sats.${feeStr}`;
+    if (pCat === 3 && congested) return `Full Submarine Swap required (high congestion). On-chain HTLC will be constructed. Amount: ${amount.toLocaleString()} sats.${feeStr}`;
+    if (pCat === 3) return `Payment via Swap Provider. Your wallet co-signs with Muun servers (2-of-2 multisig). Amount: ${amount.toLocaleString()} sats.${feeStr}`;
+    if (pCat === 4) return `Melt Ecash tokens: Tokens sent to Mint for burning. Mint's LN node pays the invoice. Amount: ${amount.toLocaleString()} sats.${feeStr}`;
+    if (pCat === 5) return `Authorize payment? The company will debit your account and pay via its Lightning node. Amount: ${amount.toLocaleString()} sats.${feeStr}`;
+    return `Authorize Lightning payment of ${amount.toLocaleString()} sats?${feeStr}`;
+}
+
+function buildDepartureSteps(payer, receiver, codeType, congested) {
+    const pId = `token-${payer.id}`;
+    const pCat = getEffCat(payer);
+    const steps = [];
+
+    if (codeType === 'L1') {
+        // ===== PAYING AN L1 ADDRESS =====
+        switch (pCat) {
+            case 0:
+            case 3:
+                // L1 or Muun → direct on-chain
+                steps.push({ text: 'Your wallet signs and broadcasts the transaction to the Bitcoin P2P network. It enters the Mempool waiting for miners.', bubble: '📡 Broadcasting', path: [pId, 'node-mempool'] });
+                if (congested) steps.push({ text: '⚠️ High congestion! The Mempool is saturated. Your transaction competes for block space based on fee priority.', bubble: '⚠️ Congested', path: [pId, 'node-mempool'], warning: true });
+                steps.push({ text: 'Miners select your transaction and include it in a new block. First confirmation received on the Blockchain.', bubble: '⛏️ Mining', path: ['node-mempool', 'node-blockchain'] });
+                break;
+            case 1:
+            case '2b':
+                // Native LN / Embedded → Submarine Swap via LSP
+                steps.push({ text: 'Your wallet initiates a Submarine Swap. The payment is sent to your LSP to begin the Lightning-to-On-Chain conversion.', bubble: '⚡ Swap Init', path: [pId, 'node-lsp'] });
+                steps.push({ text: 'The LSP routes the Lightning payment through the network toward the Swap Provider.', bubble: '🔀 Routing', path: ['node-lsp', 'node-ln'] });
+                steps.push({ text: 'The Swap Provider receives the Lightning payment and prepares the on-chain Bitcoin transaction.', bubble: '🔄 Swap', path: ['node-ln', 'node-swap'] });
+                steps.push({ text: 'The Swap Provider broadcasts the on-chain transaction to the Bitcoin Mempool.', bubble: '📡 On-Chain', path: ['node-swap', 'node-mempool'] });
+                if (congested) steps.push({ text: '⚠️ High congestion! Transaction waiting in Mempool for block inclusion.', bubble: '⚠️ Congested', path: ['node-swap', 'node-mempool'], warning: true });
+                steps.push({ text: 'Miners confirm the transaction on the Blockchain.', bubble: '⛏️ Mining', path: ['node-mempool', 'node-blockchain'] });
+                break;
+            case '2a':
+                // Own-node sovereign → Submarine Swap direct
+                steps.push({ text: 'Your sovereign node initiates a Submarine Swap payment directly through the Lightning Network. No LSP intermediary.', bubble: '⚡ Sovereign Swap', path: [pId, 'node-ln'] });
+                steps.push({ text: 'The Swap Provider receives the Lightning payment from the network.', bubble: '🔄 Swap', path: ['node-ln', 'node-swap'] });
+                steps.push({ text: 'The Swap Provider broadcasts the on-chain transaction to the Mempool.', bubble: '📡 On-Chain', path: ['node-swap', 'node-mempool'] });
+                if (congested) steps.push({ text: '⚠️ High congestion! Transaction waiting for block inclusion.', bubble: '⚠️ Congested', path: ['node-swap', 'node-mempool'], warning: true });
+                steps.push({ text: 'Miners confirm the transaction on the Blockchain.', bubble: '⛏️ Mining', path: ['node-mempool', 'node-blockchain'] });
+                break;
+            case 4:
+                // Ecash → Melt → LN → Submarine Swap → On-Chain
+                steps.push({ text: 'Your wallet submits Ecash tokens to the Chaumian Mint. The Mint verifies blind signatures and burns the tokens.', bubble: '🪙 Melting', path: [pId, 'node-mint'] });
+                steps.push({ text: "The Mint's built-in Lightning node pays the Swap Provider through the Lightning Network.", bubble: '⚡ Mint LN', path: ['node-mint', 'node-ln'] });
+                steps.push({ text: 'The Swap Provider receives the Lightning payment and constructs the on-chain transaction.', bubble: '🔄 Swap', path: ['node-ln', 'node-swap'] });
+                steps.push({ text: 'The Swap Provider broadcasts to the Bitcoin Mempool.', bubble: '📡 On-Chain', path: ['node-swap', 'node-mempool'] });
+                if (congested) steps.push({ text: '⚠️ High congestion! Waiting for block space.', bubble: '⚠️ Congested', path: ['node-swap', 'node-mempool'], warning: true });
+                steps.push({ text: 'Miners confirm the transaction on the Blockchain.', bubble: '⛏️ Mining', path: ['node-mempool', 'node-blockchain'] });
+                break;
+            case 5:
+                // Custodial → direct on-chain
+                steps.push({ text: "Your app sends the withdrawal request to the company's backend. Your internal database balance is debited.", bubble: '🏢 Debit', path: [pId, 'node-custodial'] });
+                steps.push({ text: 'The company constructs and broadcasts an on-chain Bitcoin transaction to the destination address.', bubble: '📡 On-Chain', path: ['node-custodial', 'node-mempool'] });
+                if (congested) steps.push({ text: '⚠️ High congestion! Transaction waiting in Mempool.', bubble: '⚠️ Congested', path: ['node-custodial', 'node-mempool'], warning: true });
+                steps.push({ text: 'Miners confirm the transaction on the Blockchain.', bubble: '⛏️ Mining', path: ['node-mempool', 'node-blockchain'] });
+                break;
+        }
+    } else {
+        // ===== PAYING A LN INVOICE =====
+        switch (pCat) {
+            case 0:
+                // L1 → Reverse Submarine Swap
+                steps.push({ text: 'Your wallet constructs an on-chain Hash Time-Locked Contract (HTLC) and broadcasts it to the Bitcoin Mempool.', bubble: '🔒 HTLC', path: [pId, 'node-mempool'] });
+                if (congested) steps.push({ text: '⚠️ High congestion! The HTLC transaction waits in the Mempool for miners.', bubble: '⚠️ Congested', path: [pId, 'node-mempool'], warning: true });
+                steps.push({ text: 'Miners confirm the HTLC on the Blockchain. Funds are locked and claimable only with the payment preimage.', bubble: '⛏️ HTLC Locked', path: ['node-mempool', 'node-blockchain'] });
+                steps.push({ text: 'The Swap Provider detects the confirmed on-chain HTLC and prepares to fulfill the Lightning invoice.', bubble: '👁️ Detected', path: ['node-blockchain', 'node-swap'] });
+                steps.push({ text: 'The Swap Provider pays the Lightning invoice through the network, revealing the preimage to claim the on-chain HTLC.', bubble: '⚡ LN Payment', path: ['node-swap', 'node-ln'] });
+                break;
+            case 1:
+            case '2b':
+                // Native LN / Embedded → via LSP
+                steps.push({ text: 'Your wallet constructs a trampoline payment and sends it to your LSP. The LSP computes the optimal route through the Lightning Network.', bubble: '⚡ Trampoline', path: [pId, 'node-lsp'] });
+                steps.push({ text: 'The LSP forwards the HTLC payment through the Lightning Network toward the destination.', bubble: '🔀 Routing', path: ['node-lsp', 'node-ln'] });
+                break;
+            case '2a':
+                // Own-node → direct sovereign routing
+                steps.push({ text: 'Your sovereign node performs source-based pathfinding using its local network graph and sends the payment directly into the Lightning Network. No LSP intermediary.', bubble: '⚡ Sovereign', path: [pId, 'node-ln'] });
+                break;
+            case 3:
+                // Muun → Submarine Swap
+                if (!congested) {
+                    steps.push({ text: "Your wallet co-signs the payment authorization with Muun's servers (2-of-2 multisig). The Swap Provider routes through pre-funded Lightning liquidity for instant settlement.", bubble: '🔐 Co-Sign', path: [pId, 'node-swap'] });
+                    steps.push({ text: 'The Swap Provider pays the Lightning invoice through the network. On-chain settlement is batched for fee efficiency.', bubble: '⚡ Optimized', path: ['node-swap', 'node-ln'] });
+                } else {
+                    steps.push({ text: "Your wallet and Muun's servers co-sign an on-chain HTLC (2-of-2 multisig). Full Submarine Swap required due to congestion.", bubble: '🔐 Co-Sign', path: [pId, 'node-swap'] });
+                    steps.push({ text: 'The Swap Provider broadcasts the on-chain HTLC to the Bitcoin Mempool.', bubble: '📡 HTLC', path: ['node-swap', 'node-mempool'] });
+                    steps.push({ text: '⚠️ High congestion! HTLC waiting in Mempool. This increases Muun\'s transaction cost significantly.', bubble: '⚠️ Congested', path: ['node-swap', 'node-mempool'], warning: true });
+                    steps.push({ text: 'Miners confirm the HTLC on the Blockchain.', bubble: '⛏️ Confirmed', path: ['node-mempool', 'node-blockchain'] });
+                    steps.push({ text: 'The Swap Provider detects the confirmed HTLC and pays the Lightning invoice, claiming the on-chain funds with the preimage.', bubble: '⚡ LN Payment', path: ['node-swap', 'node-ln'] });
+                }
+                break;
+            case 4:
+                // Ecash → Melt at Mint
+                steps.push({ text: 'Your wallet submits Ecash tokens to the Chaumian Mint. The Mint verifies blind signatures and burns the tokens (double-spend check).', bubble: '🪙 Melting', path: [pId, 'node-mint'] });
+                steps.push({ text: "The Mint's built-in Lightning node pays the invoice through the Lightning Network.", bubble: '⚡ Mint Pays', path: ['node-mint', 'node-ln'] });
+                break;
+            case 5:
+                // Custodial → company pays
+                steps.push({ text: "Your app sends the payment request to the company's backend servers. The company debits your internal account balance.", bubble: '🏢 Debit', path: [pId, 'node-custodial'] });
+                steps.push({ text: "The company's Lightning node pays the invoice through the Lightning Network.", bubble: '⚡ Company LN', path: ['node-custodial', 'node-ln'] });
+                break;
+        }
+    }
+    return steps;
+}
+
+function buildArrivalSteps(payer, receiver, codeType, congested, amount, totalCost, payerId) {
+    const rId = `token-${receiver.id}`;
+    const rCat = getEffCat(receiver);
+    const steps = [];
+    const settleData = { action: 'settle', payerId, receiverId: receiver.id, cost: totalCost, earn: amount };
+
+    if (codeType === 'L1') {
+        // All L1 arrivals: Blockchain → Receiver
+        steps.push({
+            text: "The Blockchain records the new UTXO. The receiver's wallet detects the confirmed output and updates its balance.",
+            bubble: '✅ Settled',
+            path: ['node-blockchain', rId],
+            ...settleData
+        });
+    } else {
+        // LN arrivals depend on receiver category
+        switch (rCat) {
+            case 1:
+            case '2b':
+                steps.push({
+                    text: "The Lightning Network delivers the payment to the receiver's LSP, which forwards it to the mobile wallet through their shared channel. Balance confirmed.",
+                    bubble: '✅ Received',
+                    path: ['node-ln', rId],
+                    ...settleData
+                });
+                break;
+            case '2a':
+                steps.push({
+                    text: "The payment arrives directly at the receiver's sovereign node through the Lightning Network. Channel state updated.",
+                    bubble: '✅ Received',
+                    path: ['node-ln', rId],
+                    ...settleData
+                });
+                break;
+            case 3:
+                // Muun receiving LN → Reverse Submarine Swap
+                steps.push({
+                    text: "The Lightning payment arrives at Muun's Swap Provider, which initiates a Reverse Submarine Swap to settle the funds on-chain for the receiver.",
+                    bubble: '🔄 Rev. Swap',
+                    path: ['node-ln', 'node-swap']
+                });
+                steps.push({
+                    text: "The Swap Provider settles the on-chain output to the receiver's 2-of-2 multisig address. Balance updated in the Muun wallet.",
+                    bubble: '✅ On-Chain',
+                    path: ['node-swap', rId],
+                    ...settleData
+                });
+                break;
+            case 4:
+                // Ecash receiving → Mint
+                steps.push({
+                    text: "The Chaumian Mint's Lightning node receives the payment. The Mint issues new Ecash tokens via blind signatures — unlinkable to this transaction.",
+                    bubble: '🪙 Minting',
+                    path: ['node-ln', 'node-mint']
+                });
+                steps.push({
+                    text: "Fresh Ecash tokens are delivered to the receiver's wallet. These are bearer instruments — only the holder can spend them.",
+                    bubble: '✅ Minted',
+                    path: ['node-mint', rId],
+                    ...settleData
+                });
+                break;
+            case 5:
+                // Custodial receiving → Company
+                steps.push({
+                    text: "The company's Lightning node receives the payment. The backend credits the receiver's internal database balance.",
+                    bubble: '✅ Credited',
+                    path: ['node-ln', rId],
+                    ...settleData
+                });
+                break;
+            default:
+                steps.push({
+                    text: 'Payment delivered to the receiver through the Lightning Network.',
+                    bubble: '✅ Done',
+                    path: ['node-ln', rId],
+                    ...settleData
+                });
+        }
+    }
+    return steps;
+}
+
+// =====================================================================
+// STEP CONTROLLER
+// =====================================================================
+function runStepEngine() {
+    if (stepIdx < 0 || stepIdx >= txSteps.length) return;
+    const step = txSteps[stepIdx];
+    const infoText = document.getElementById('step-text');
+
+    document.getElementById('btn-prev').disabled = (stepIdx === 0);
+    document.getElementById('btn-next').disabled = !!step.interactive;
+
+    if (stepIdx === 0 && step.interactive) {
+        infoText.innerHTML = `<strong>[Approval Required]:</strong> ${step.text}`;
+    } else {
+        infoText.innerHTML = `<strong>[Step ${stepIdx}/${txSteps.length - 1}]:</strong> ${step.text}`;
+    }
+
+    hideBubbles();
+
+    if (step.path) {
+        drawSVGPath(step.path);
+    } else {
+        clearSVGPath();
+    }
+
+    // Show bubble on the origin entity
+    const originId = step.path ? step.path[0] : step.targetNode;
+    if (originId) {
+        showBubble(originId, step.bubble || '', step.warning);
+    }
+
+    if (step.interactive && step.action === 'prompt') {
+        showApprovalPrompt(step);
+    }
+}
+
+function showApprovalPrompt(step) {
+    const zone = document.getElementById('hub-action-zone');
+    zone.innerHTML = '';
+
+    const btnYes = document.createElement('button');
+    btnYes.textContent = '👍 APPROVE';
+    btnYes.style.cssText = 'background:var(--success); color:#fff; width:120px;';
+    btnYes.addEventListener('click', () => {
+        zone.innerHTML = '<span style="color:var(--success); font-weight:700;">✓ Authorized</span>';
+        document.getElementById('btn-next').disabled = false;
+        step.interactive = false;
+        nextStep();
+    });
+
+    const btnNo = document.createElement('button');
+    btnNo.textContent = '👎 REJECT';
+    btnNo.style.cssText = 'background:var(--danger); color:#fff; width:120px;';
+    btnNo.addEventListener('click', () => {
+        alert('Transaction rejected by the user on their device.');
+        resetSimulation();
+        renderAll();
+    });
+
+    zone.appendChild(btnYes);
+    zone.appendChild(btnNo);
+}
+
+function nextStep() {
+    const step = txSteps[stepIdx];
+    if (step && step.action === 'settle' && stepIdx === txSteps.length - 1) {
+        applyBalances(step.payerId, step.receiverId, step.cost, step.earn);
+        alert('Transaction Completed Successfully!\nGlobal balances have been updated.');
+        resetSimulation();
+        renderAll();
+        return;
+    }
+    if (stepIdx < txSteps.length - 1) {
+        stepIdx++;
+        runStepEngine();
+    }
+}
+
+function prevStep() {
+    if (stepIdx > 0) {
+        document.getElementById('hub-action-zone').innerHTML = '';
+        if (stepIdx === 1) txSteps[0].interactive = true;
+        stepIdx--;
+        runStepEngine();
+    }
+}
+
+function applyBalances(pId, rId, cost, earn) {
+    const payer = wallets.find(w => w.id === pId);
+    const receiver = wallets.find(w => w.id === rId);
+    if (payer) payer.balance -= cost;
+    if (receiver) receiver.balance += earn;
+}
+
+function resetSimulation() {
+    activeCode = null;
+    txSteps = [];
+    stepIdx = -1;
+    document.getElementById('hub-state-title').textContent = 'Broadcast Channel Open';
+    document.getElementById('hub-code-display').textContent = 'Waiting for input... No active code in global memory.';
+    document.getElementById('step-text').textContent = 'ℹ️ Click a wallet on the board to generate a receive code, or click to send if a code is already active.';
+    document.getElementById('btn-next').disabled = true;
+    document.getElementById('btn-prev').disabled = true;
+    document.getElementById('hub-action-zone').innerHTML = '';
+    hideBubbles();
+    clearSVGPath();
+}
+
+// =====================================================================
+// VISUALIZATION
+// =====================================================================
+function showBubble(nodeId, text, isWarning) {
+    const el = document.getElementById(nodeId);
+    const bubble = document.getElementById('step-bubble-1');
+    if (!el || !bubble) return;
+
+    bubble.textContent = text;
+    bubble.classList.toggle('warning-bubble', !!isWarning);
+
+    const rect = el.getBoundingClientRect();
+    const container = document.getElementById('canvas-area').getBoundingClientRect();
+    bubble.style.left = `${rect.left - container.left + rect.width / 2 - 100}px`;
+    bubble.style.top = `${rect.top - container.top - 42}px`;
+    bubble.classList.add('visible');
+}
+
+function hideBubbles() {
+    document.querySelectorAll('.step-bubble').forEach(b => { b.classList.remove('visible'); b.classList.remove('warning-bubble'); });
+}
+
+function drawSVGPath(nodeIds) {
+    const svgPath = document.getElementById('flow-path');
+    const container = document.getElementById('canvas-area').getBoundingClientRect();
+    let d = '';
+
+    nodeIds.forEach((id, i) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        const x = rect.left - container.left + rect.width / 2;
+        const y = rect.top - container.top + rect.height / 2;
+        d += (i === 0) ? `M ${x} ${y}` : ` L ${x} ${y}`;
+    });
+
+    svgPath.setAttribute('d', d);
+    svgPath.className.baseVal = 'connection-line active';
+}
+
+function clearSVGPath() {
+    const svgPath = document.getElementById('flow-path');
+    svgPath.setAttribute('d', '');
+    svgPath.className.baseVal = 'connection-line';
+}
+
+// =====================================================================
+// DRAG & DROP
+// =====================================================================
+function setupDragAndDrop() {
+    const canvas = document.getElementById('canvas-area');
+
+    canvas.addEventListener('mousedown', (e) => {
+        const target = e.target.closest('.wallet-token, .infra-node');
+        if (!target) return;
+        isDragging = false;
+        dragEl = target;
+        dragStart = { mx: e.clientX, my: e.clientY, ex: target.offsetLeft, ey: target.offsetTop };
+        e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (!dragEl) return;
+        const dx = e.clientX - dragStart.mx;
+        const dy = e.clientY - dragStart.my;
+        if (!isDragging && (Math.abs(dx) > 3 || Math.abs(dy) > 3)) isDragging = true;
+        if (!isDragging) return;
+
+        const canvas = document.getElementById('canvas-area');
+        const cr = canvas.getBoundingClientRect();
+        let nx = dragStart.ex + dx;
+        let ny = dragStart.ey + dy;
+        nx = Math.max(0, Math.min(nx, cr.width - dragEl.offsetWidth));
+        ny = Math.max(0, Math.min(ny, cr.height - dragEl.offsetHeight));
+
+        dragEl.style.left = `${nx}px`;
+        dragEl.style.top = `${ny}px`;
+
+        if (dragEl.classList.contains('wallet-token')) {
+            const id = parseInt(dragEl.id.replace('token-', ''));
+            const w = wallets.find(w => w.id === id);
+            if (w) {
+                w.x = (nx / cr.width) * 100;
+                w.y = (ny / cr.height) * 100;
+                const modal = document.getElementById(`modal-${id}`);
+                if (modal) { modal.style.left = `${Math.min(w.x + 2, 75)}%`; modal.style.top = `${Math.min(w.y + 11, 70)}%`; }
+            }
+        }
+
+        updateLiveLayout();
+    });
+
+    document.addEventListener('mouseup', () => {
+        if (dragEl && !isDragging) { /* click handled by click listener */ }
+        dragEl = null;
+        setTimeout(() => { isDragging = false; }, 10);
+    });
+}
+
+function updateLiveLayout() {
+    if (stepIdx !== -1 && txSteps[stepIdx]) {
+        const step = txSteps[stepIdx];
+        if (step.path) drawSVGPath(step.path);
+        const originId = step.path ? step.path[0] : step.targetNode;
+        if (originId) {
+            const el = document.getElementById(originId);
+            const bubble = document.getElementById('step-bubble-1');
+            if (el && bubble && bubble.classList.contains('visible')) {
+                const rect = el.getBoundingClientRect();
+                const cr = document.getElementById('canvas-area').getBoundingClientRect();
+                bubble.style.left = `${rect.left - cr.left + rect.width / 2 - 100}px`;
+                bubble.style.top = `${rect.top - cr.top - 42}px`;
+            }
+        }
+    }
+}
+</script>
+</body>
+</html>
