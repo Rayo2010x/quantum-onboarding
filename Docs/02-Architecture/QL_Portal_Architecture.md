@@ -1,8 +1,8 @@
 # QL_Portal_Architecture — QuantumBTC Onboarding Portal
 
 > **ID:** QL_Portal_Architecture
-> **Version:** 1.4
-> **Last Updated:** 2026-04-22
+> **Version:** 1.5
+> **Last Updated:** 2026-06-11
 > **Status:** APPROVED
 
 ## 1. Overview
@@ -49,7 +49,7 @@ onboarding-portal/
 
 ## 4. Tab Architecture
 
-The page is a **5-tab SPA** driven by React `useState` in `page.tsx`. `'use client'` is required.
+The page is a **6-tab SPA** driven by React `useState` in `page.tsx`. `'use client'` is required.
 
 | Tab ID | Label | Primary Component |
 | :--- | :--- | :--- |
@@ -57,7 +57,8 @@ The page is a **5-tab SPA** driven by React `useState` in `page.tsx`. `'use clie
 | `wallets` | Wallets | `WalletTierList` |
 | `quantumshield` | QuantumShield | `QuantumShielding` |
 | `faq` | FAQ | `FAQ` |
-| `walletlab` | Wallet Lab | `WalletLab` |
+| `walletlab` | L1 Wallet Lab | `WalletLab` |
+| `txsimulator` | Transaction Lab | `TransactionLab` |
 
 ## 4.1 Responsive Navigation (`TabNav`)
 
@@ -155,3 +156,16 @@ The **Wallet Lab** is a cryptography education tool that demonstrates how Bitcoi
 - Git repository: `onboarding-portal/` subfolder within `quantum-btc-marketing/`.
 - Deployments are triggered by git push to `main` branch.
 - See `QL_Operations_Manual.md` for deployment procedures.
+
+## 9. Transaction Lab Tab (Tab 6)
+
+### 9.1 Overview
+
+The **Transaction Lab** is an interactive educational sandbox that simulates transactions between different Bitcoin technologies (Layer 1, Layer 2 Lightning, Ecash, Swaps, and Custodial solutions). It allows users to visualize routing paths, understand liquidity constraints, and see fee differences between technologies under varying congestion scenarios.
+
+### 9.2 Architecture
+
+- **State Hook:** Powered by client-side state in `components/TransactionLab/useTransactionLabState.ts` (React state/hooks).
+- **Draggable Canvas:** Rendered client-side, using pointer event handlers for coordinate tracking relative to the viewport bounds.
+- **SVG Flow Lines:** Rendered dynamically based on node placement and active playback step coordinates.
+- **Rules & Specification:** See [Transaction Lab Specification](QL_Transaction_Lab_Spec.md) for full design guidelines.

@@ -1,0 +1,28 @@
+/* TransactionLab — placeholder container styles.
+   Follows QL_Transaction_Lab_Spec.md Rule IV:
+   - CSS Modules only (no Tailwind)
+   - Colors via CSS custom properties (no hard-coded hex values) */
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 40vh;
+    padding: 3rem 1.5rem;
+    text-align: center;
+}
+
+.heading {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 0.75rem;
+}
+
+.description {
+    font-size: 1rem;
+    color: var(--foreground);
+    opacity: 0.7;
+    max-width: 480px;
+}

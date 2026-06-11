@@ -1,8 +1,8 @@
 # DOCUMENT INDEX — QuantumBTC Marketing & Onboarding Portal
 
 > **ID:** QL_DOCUMENT_INDEX
-> **Version:** 1.3
-> **Last Updated:** 2026-04-22
+> **Version:** 1.4
+> **Last Updated:** 2026-06-11
 > **Status:** APPROVED
 
 This is the Master Index (SSOT) for all technical documentation in the `quantum-btc-marketing` repository.
@@ -24,7 +24,8 @@ Documents use the `QL_` prefix as mandated by `SOP_Document_Control.md`.
 ## 02-Architecture (Technical Design)
 | Artifact | Version | Status | Last Modified |
 | :--- | :--- | :--- | :--- |
-| [Portal Architecture](02-Architecture/QL_Portal_Architecture.md) | 1.4 | **APPROVED** | 2026-04-22 |
+| [Portal Architecture](02-Architecture/QL_Portal_Architecture.md) | 1.5 | **APPROVED** | 2026-06-11 |
+| [Transaction Lab Specification](02-Architecture/QL_Transaction_Lab_Spec.md) | 0.2 | **DRAFT** | 2026-06-11 |
 | [SEO Strategy](02-Architecture/QL_SEO_Strategy.md) | 1.0 | **APPROVED** | 2026-04-09 |
 
 ## 03-Content (Messaging & Copy)

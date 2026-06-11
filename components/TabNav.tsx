@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import styles from './TabNav.module.css';
 
-export type TabId = 'trilemma' | 'wallets' | 'quantumshield' | 'faq' | 'walletlab';
+export type TabId = 'trilemma' | 'wallets' | 'quantumshield' | 'faq' | 'walletlab' | 'txsimulator';
 interface Tab {
     id: TabId;
     label: string;
@@ -14,7 +14,8 @@ const TABS: Tab[] = [
     { id: 'wallets',       label: 'Wallets',        icon: '👛' },
     { id: 'quantumshield', label: 'QuantumShield',  icon: '🛡️' },
     { id: 'faq',           label: 'FAQ',            icon: '❓' },
-    { id: 'walletlab',     label: 'Wallet Lab',     icon: '🔬' },
+    { id: 'walletlab',     label: 'L1 Wallet Lab',  icon: '🔬' },
+    { id: 'txsimulator',   label: 'Transaction Lab', icon: '⚡' },
 ];
 
 interface TabNavProps {

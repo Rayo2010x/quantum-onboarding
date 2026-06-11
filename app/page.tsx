@@ -10,6 +10,7 @@ import WalletTierList from "../components/WalletTierList";
 import FAQ from "../components/FAQ";
 import QuantumShielding from "../components/QuantumShielding";
 import WalletLab from "../components/WalletLab";
+import TransactionLab from "../components/TransactionLab";
 import dict from "../dictionaries/en.json";
 
 export default function Home() {
@@ -76,6 +77,17 @@ export default function Home() {
                     className={styles.tabPanel}
                 >
                     <WalletLab />
+                </div>
+
+                {/* ── Tab 7: Transaction Lab ────────────── */}
+                <div
+                    id="panel-txsimulator"
+                    role="tabpanel"
+                    aria-labelledby="tab-txsimulator"
+                    hidden={activeTab !== 'txsimulator'}
+                    className={styles.tabPanel}
+                >
+                    <TransactionLab />
                 </div>
 
             </main>

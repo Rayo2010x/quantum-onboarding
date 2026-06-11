@@ -109,6 +109,11 @@
         .wl-cat-4 { border-left-color: var(--cat-4); } .wl-cat-5 { border-left-color: var(--cat-5); }
         .delete-btn { background: transparent; color: var(--danger); width: auto; padding: 2px 8px; font-size: 0.75rem; border: none; margin: 0; }
         .delete-btn:hover { background: rgba(239,68,68,0.1); }
+        #sidebar-wallet-detail { margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border); }
+        .sidebar-placeholder {
+            font-size: 0.8rem; color: var(--text-dim); text-align: center; padding: 20px 12px;
+            border: 1px dashed var(--border); border-radius: 10px;
+        }
 
         /* ===== MAP CONTAINER ===== */
         #map-container { flex-grow: 1; position: relative; display: flex; flex-direction: column; overflow: hidden; }
@@ -169,19 +174,32 @@
         .wt-cat-2 { border-color: var(--cat-2); } .wt-cat-3 { border-color: var(--cat-3); }
         .wt-cat-4 { border-color: var(--cat-4); } .wt-cat-5 { border-color: var(--cat-5); }
         .wallet-token .badge {
-            position: absolute; top: -4px; right: -4px; min-width: 22px; height: 22px; padding: 0 5px;
-            background: var(--primary); color: #000; border-radius: 12px;
+            position: absolute; top: 6px; left: 50%; transform: translateX(-50%);
             display: flex; align-items: center; justify-content: center;
-            font-weight: 800; font-size: 0.65rem; pointer-events: none;
+            font-weight: 800; font-size: 0.6rem; pointer-events: none; z-index: 1;
+            color: var(--text-muted);
         }
+        .wt-cat-0 .badge { color: var(--cat-0); } .wt-cat-1 .badge { color: var(--cat-1); }
+        .wt-cat-2 .badge { color: var(--cat-2); } .wt-cat-3 .badge { color: var(--cat-3); }
+        .wt-cat-4 .badge { color: var(--cat-4); } .wt-cat-5 .badge { color: var(--cat-5); }
+        .wallet-token .token-delete-btn {
+            position: absolute; top: -4px; right: -4px; min-width: 22px; height: 22px;
+            padding: 0 5px; background: var(--bg-main); color: var(--danger); border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 0.65rem; cursor: pointer;
+            border: 2px solid var(--danger); z-index: 6;
+            transition: all 0.2s; pointer-events: auto;
+        }
+        .wallet-token .token-delete-btn:hover { background: var(--danger); color: #fff; }
         .wallet-token .w-name { font-size: 0.75rem; font-weight: 700; text-align: center; max-width: 76px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; pointer-events: none; }
         .wallet-token .w-balance { font-size: 0.7rem; color: var(--success); font-family: 'Courier New', monospace; margin-top: 1px; pointer-events: none; }
+        .wallet-token .w-inbound { font-size: 0.55rem; color: var(--text-dim); font-family: 'Courier New', monospace; margin-top: 0; pointer-events: none; }
 
         /* ===== MODALS ===== */
         .wallet-modal {
-            position: absolute; background: var(--bg-panel); border: 1px solid var(--border);
-            border-radius: 14px; width: 270px; padding: 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.6);
-            z-index: 200; display: none; flex-direction: column; gap: 8px;
+            position: relative; background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; width: 100%; padding: 14px; box-shadow: none;
+            z-index: 1; display: none; flex-direction: column; gap: 8px;
         }
         .wallet-modal h3 { font-size: 0.85rem; font-weight: 700; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 6px; }
         .modal-section-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px; margin-top: 4px; }
@@ -291,8 +309,9 @@
         </div>
         <button id="add-wallet-btn">Add to Board</button>
 
-        <h2>Wallets on Board</h2>
-        <div id="sidebar-wallet-list"></div>
+        <div id="sidebar-wallet-detail">
+            <p class="sidebar-placeholder">Click a wallet to view its details</p>
+        </div>
 
         <div style="margin-top:auto; padding-top:15px; border-top:1px solid var(--border); text-align:center;">
             <span style="font-size:0.65rem; color:var(--text-dim);">QuantumBTC — In Satoshi We Trust. In Code We Verify.</span>
@@ -366,7 +385,7 @@
 
             <div id="legend-box">
                 <div class="legend-title">Wallet Categories</div>
-                <div class="legend-item"><div class="legend-color" style="background:var(--cat-0);"></div>0. L1 On-Chain</div>
+                <div class="legend-item"><div class="legend-color" style="background:var(--cat-0);"></div>0. L1 On-Chain (via Swap)</div>
                 <div class="legend-item"><div class="legend-color" style="background:var(--cat-1);"></div>1. Native LN (Auto-LSP)</div>
                 <div class="legend-item"><div class="legend-color" style="background:var(--cat-2);"></div>2. Own-Node LN</div>
                 <div class="legend-item"><div class="legend-color" style="background:var(--cat-3);"></div>3. Hybrid Swaps</div>
@@ -389,7 +408,7 @@
 // CONFIGURATION
 // =====================================================================
 const CAT_LABELS = {
-    0: 'L1 Bitcoin (On-Chain)',
+    0: 'L1 On-Chain (via Swap Service)',
     1: 'Native Lightning (Auto-LSP)',
     '2a': 'Own-Node LN (Sovereign)',
     '2b': 'Own-Node LN (LSP-Assisted)',
@@ -399,7 +418,7 @@ const CAT_LABELS = {
 };
 
 const CAT_EXAMPLES = {
-    0: 'Sparrow, Electrum',
+    0: 'Aqua, Electrum',
     1: 'Phoenix, Breez',
     '2a': 'Zeus (Remote), Zap',
     '2b': 'Zeus (Embedded)',
@@ -459,6 +478,19 @@ function getEffCat(w) {
     return w.category;
 }
 
+function getDefaultInbound(category, subCat) {
+    const effCat = category === 2 ? '2' + (subCat || 'a') : category;
+    if (effCat === 1 || effCat === '2b') return 500000;
+    if (effCat === '2a') return 2000000;
+    return null;
+}
+
+function formatCompact(n) {
+    if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+    if (n >= 1000) return Math.round(n / 1000) + 'k';
+    return n.toLocaleString();
+}
+
 function createWallet(name, category, subCat) {
     category = parseInt(category);
     const effCat = category === 2 ? '2' + (subCat || 'a') : category;
@@ -474,6 +506,7 @@ function createWallet(name, category, subCat) {
         category: category,
         subCategory: category === 2 ? (subCat || 'a') : null,
         balance: 100000,
+        inboundLiquidity: getDefaultInbound(category, category === 2 ? (subCat || 'a') : null),
         x: slot.x + offset * 0.5,
         y: slot.y + offset * 1.0
     };
@@ -499,24 +532,30 @@ function deleteWallet(id) {
 
 function renderAll() {
     renderTokens();
-    renderSidebarList();
+    renderSidebarDetail();
 }
 
-function renderSidebarList() {
-    const container = document.getElementById('sidebar-wallet-list');
-    container.innerHTML = '';
-    wallets.forEach(w => {
-        const ec = getEffCat(w);
-        const item = document.createElement('div');
-        item.className = `wallet-list-item wl-cat-${w.category}`;
-        item.innerHTML = `<span><strong>[#${ec}]</strong> ${w.name}</span><button class="delete-btn" onclick="deleteWallet(${w.id})">✕</button>`;
-        container.appendChild(item);
-    });
+function renderSidebarDetail() {
+    const container = document.getElementById('sidebar-wallet-detail');
+    if (selectedWalletId !== null && stepIdx === -1) {
+        const w = wallets.find(w => w.id === selectedWalletId);
+        if (w) {
+            container.innerHTML = '';
+            const modal = document.createElement('div');
+            modal.className = 'wallet-modal';
+            modal.id = `modal-${w.id}`;
+            buildModalContent(modal, w);
+            container.appendChild(modal);
+            modal.style.display = 'flex';
+            return;
+        }
+    }
+    container.innerHTML = '<p class="sidebar-placeholder">Click a wallet to view its details</p>';
 }
 
 function renderTokens() {
     const canvas = document.getElementById('canvas-area');
-    canvas.querySelectorAll('.wallet-token, .wallet-modal').forEach(el => el.remove());
+    canvas.querySelectorAll('.wallet-token').forEach(el => el.remove());
 
     wallets.forEach(w => {
         const token = document.createElement('div');
@@ -528,24 +567,27 @@ function renderTokens() {
         const ec = getEffCat(w);
         token.innerHTML = `
             <div class="badge">${ec}</div>
+            <div class="token-delete-btn">✕</div>
             <div class="w-name">${w.name}</div>
             <div class="w-balance">${w.balance.toLocaleString()} sats</div>
+            ${w.inboundLiquidity !== null ? `<div class="w-inbound"${w.inboundLiquidity <= 0 ? ' style="color:var(--danger)"' : ''}>↓ ${formatCompact(Math.max(0, w.inboundLiquidity))}</div>` : ''}
         `;
         token.addEventListener('click', (e) => {
             if (isDragging) return;
             e.stopPropagation();
             selectWallet(w.id);
         });
-        canvas.appendChild(token);
 
-        // Create modal
-        const modal = document.createElement('div');
-        modal.className = 'wallet-modal';
-        modal.id = `modal-${w.id}`;
-        modal.style.left = `${Math.min(w.x + 2, 75)}%`;
-        modal.style.top = `${Math.min(w.y + 11, 70)}%`;
-        buildModalContent(modal, w);
-        canvas.appendChild(modal);
+        const deleteBtn = token.querySelector('.token-delete-btn');
+        deleteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            deleteWallet(w.id);
+        });
+        deleteBtn.addEventListener('mousedown', (e) => {
+            e.stopPropagation();
+        });
+
+        canvas.appendChild(token);
     });
 }
 
@@ -553,21 +595,22 @@ function renderTokens() {
 // MODAL SYSTEM (SEND / RECEIVE)
 // =====================================================================
 function selectWallet(id) {
-    closeModals();
     selectedWalletId = id;
-    renderTokens();
-    if (stepIdx === -1) {
-        const modal = document.getElementById(`modal-${id}`);
-        if (modal) modal.style.display = 'flex';
-    }
+    renderAll();
 }
 
 function closeModals() {
-    document.querySelectorAll('.wallet-modal').forEach(m => m.style.display = 'none');
+    const container = document.getElementById('sidebar-wallet-detail');
+    if (container) container.innerHTML = '<p class="sidebar-placeholder">Click a wallet to view its details</p>';
+}
+
+function dismissWalletPanel() {
+    selectedWalletId = null;
+    renderAll();
 }
 
 function buildModalContent(modal, wallet) {
-    modal.innerHTML = `<div class="modal-close" onclick="closeModals()">✕</div>`;
+    modal.innerHTML = `<div class="modal-close" onclick="dismissWalletPanel()">✕</div>`;
 
     const heading = document.createElement('h3');
     heading.textContent = wallet.name;
@@ -577,6 +620,14 @@ function buildModalContent(modal, wallet) {
     catLabel.className = 'modal-detail';
     catLabel.textContent = `Cat ${getEffCat(wallet)}: ${CAT_LABELS[getEffCat(wallet)]}`;
     modal.appendChild(catLabel);
+
+    if (wallet.inboundLiquidity !== null) {
+        const inboundInfo = document.createElement('div');
+        inboundInfo.className = 'modal-detail';
+        inboundInfo.style.color = wallet.inboundLiquidity > 0 ? 'var(--accent)' : 'var(--danger)';
+        inboundInfo.textContent = `⚡ Inbound Liquidity: ${wallet.inboundLiquidity.toLocaleString()} sats`;
+        modal.appendChild(inboundInfo);
+    }
 
     // If there's an active code from ANOTHER wallet -> show SEND options
     if (activeCode && activeCode.creatorId !== wallet.id) {
@@ -610,44 +661,44 @@ function buildReceiveOptions(modal, wallet) {
     label.textContent = '── Receive ──';
     modal.appendChild(label);
 
-    const amtLabel = document.createElement('label');
-    amtLabel.textContent = 'Amount (sats):';
-    amtLabel.style.cssText = 'font-size:0.75rem; color:var(--text-muted); margin-top:4px; display:block;';
-    modal.appendChild(amtLabel);
-
-    const amtInput = document.createElement('input');
-    amtInput.type = 'number';
-    amtInput.value = '2000';
-    amtInput.id = `amount-${wallet.id}`;
-    modal.appendChild(amtInput);
-
-    // L1 Address — Cat 0, Cat 3
+    // L1 Address — Cat 0, Cat 3 (sender defines amount)
     if (ec === 0 || ec === 3) {
-        addReceiveButton(modal, wallet, 'L1', '📦 Bitcoin Address (bc1...)', 'Dynamic', 'One-time on-chain address');
+        addReceiveButton(modal, wallet, 'L1', '📦 Bitcoin Address (bc1...)', 'Static', 'Destination only — sender defines the amount', false);
     }
 
-    // LN Invoice — All except Cat 0
+    // LN Invoice — All except Cat 0 (receiver defines amount)
     if (ec !== 0) {
+        const amtLabel = document.createElement('label');
+        amtLabel.textContent = 'Invoice Amount (sats):';
+        amtLabel.style.cssText = 'font-size:0.75rem; color:var(--text-muted); margin-top:8px; display:block;';
+        modal.appendChild(amtLabel);
+
+        const amtInput = document.createElement('input');
+        amtInput.type = 'number';
+        amtInput.value = '2000';
+        amtInput.id = `amount-${wallet.id}`;
+        modal.appendChild(amtInput);
+
         let lnLabel = '⚡ Lightning Invoice';
         if (ec === 3) lnLabel += ' (via Swap)';
         if (ec === 4) lnLabel += ' (via Mint)';
-        addReceiveButton(modal, wallet, 'LN', lnLabel, 'Dynamic', 'Single-use BOLT11 invoice');
+        addReceiveButton(modal, wallet, 'LN', lnLabel, 'Dynamic', 'Single-use BOLT11 invoice — amount baked in', true);
     }
 
-    // LNURL / Lightning Address — Cat 1, 2b, 4, 5
+    // LNURL / Lightning Address — Cat 1, 2b, 4, 5 (sender defines amount)
     if (ec === 1 || ec === '2b' || ec === 4 || ec === 5) {
         let lnurlLabel = '📧 Lightning Address';
         if (ec === 4) lnurlLabel += ' (via Mint)';
-        addReceiveButton(modal, wallet, 'LNURL', lnurlLabel, 'Static', 'Reusable LNURL-pay endpoint');
+        addReceiveButton(modal, wallet, 'LNURL', lnurlLabel, 'Static', 'Reusable LNURL-pay endpoint — sender defines the amount', false);
     }
 
-    // Ecash Token — Cat 4 only
+    // Ecash Payment Request — Cat 4 only (sender defines amount)
     if (ec === 4) {
-        addReceiveButton(modal, wallet, 'ECASH', '🪙 Ecash Token (Same Mint)', 'Static', 'Bearer token transfer — no Lightning needed');
+        addReceiveButton(modal, wallet, 'ECASH', '🪙 Ecash Payment Request (Same Mint)', 'Static', 'NUT-18 request — sender defines amount, same-mint transfer', false);
     }
 }
 
-function addReceiveButton(modal, wallet, type, label, tagType, hint) {
+function addReceiveButton(modal, wallet, type, label, tagType, hint, hasReceiverAmount) {
     const wrapper = document.createElement('div');
     wrapper.style.cssText = 'display:flex; flex-direction:column; gap:2px; margin-top:4px;';
 
@@ -655,8 +706,13 @@ function addReceiveButton(modal, wallet, type, label, tagType, hint) {
     btn.className = 'secondary';
     btn.innerHTML = `${label} <span class="code-type-tag tag-${tagType.toLowerCase()}">${tagType}</span>`;
     btn.addEventListener('click', () => {
-        const amt = parseInt(document.getElementById(`amount-${wallet.id}`).value);
-        generateCode(wallet.id, type, amt);
+        if (hasReceiverAmount) {
+            const amt = parseInt(document.getElementById(`amount-${wallet.id}`).value);
+            if (isNaN(amt) || amt <= 0) { alert('Please enter a valid amount in satoshis.'); return; }
+            generateCode(wallet.id, type, amt);
+        } else {
+            generateCode(wallet.id, type, null);
+        }
     });
     wrapper.appendChild(btn);
 
@@ -679,7 +735,11 @@ function buildSendOptions(modal, wallet) {
     const creator = wallets.find(w => w.id === activeCode.creatorId);
     const info = document.createElement('div');
     info.className = 'modal-detail';
-    info.innerHTML = `Active code: <strong>[${activeCode.type}]</strong> ${activeCode.amount.toLocaleString()} sats<br>Destination: ${creator ? creator.name : 'Unknown'}`;
+    if (activeCode.amountDefinedBy === 'receiver') {
+        info.innerHTML = `Active code: <strong>[${activeCode.type}]</strong> ${activeCode.amount.toLocaleString()} sats<br>Destination: ${creator ? creator.name : 'Unknown'}`;
+    } else {
+        info.innerHTML = `Active code: <strong>[${activeCode.type}]</strong> — You define the amount<br>Destination: ${creator ? creator.name : 'Unknown'}`;
+    }
     modal.appendChild(info);
 
     // Check compatibility
@@ -702,6 +762,26 @@ function buildSendOptions(modal, wallet) {
         modal.appendChild(note);
     }
 
+    // Amount input for sender-defined codes (L1, LNURL, ECASH)
+    if (activeCode.amountDefinedBy === 'sender') {
+        const amtLabel = document.createElement('label');
+        amtLabel.textContent = 'Amount to send (sats):';
+        amtLabel.style.cssText = 'font-size:0.75rem; color:var(--text-muted); margin-top:6px; display:block;';
+        modal.appendChild(amtLabel);
+
+        const amtInput = document.createElement('input');
+        amtInput.type = 'number';
+        amtInput.value = '2000';
+        amtInput.id = `send-amount-${wallet.id}`;
+        modal.appendChild(amtInput);
+
+        const balanceHint = document.createElement('div');
+        balanceHint.className = 'modal-detail';
+        balanceHint.style.color = 'var(--text-dim)';
+        balanceHint.textContent = `Available balance: ${wallet.balance.toLocaleString()} sats`;
+        modal.appendChild(balanceHint);
+    }
+
     const btnPay = document.createElement('button');
     btnPay.textContent = '⚡ Scan & Pay';
     btnPay.addEventListener('click', () => startTransaction(wallet.id));
@@ -720,8 +800,8 @@ function isPaymentCompatible(payerEffCat, codeType) {
         return { ok: true, note: 'Requires Submarine Swap (LN → On-Chain).' };
     }
     // LN or LNURL
-    if (payerEffCat === 0) return { ok: true, note: 'Requires Reverse Submarine Swap (On-Chain → LN).' };
-    if (payerEffCat === 3) return { ok: true, note: 'Routed via Swap Provider (Submarine Swap).' };
+    if (payerEffCat === 0) return { ok: true, note: 'Requires Submarine Swap (On-Chain → LN). External swap service (e.g. Boltz) may be needed.' };
+    if (payerEffCat === 3) return { ok: true, note: 'Co-signed with Muun servers (2-of-2). Full Submarine Swap only if L1 is congested.' };
     if (payerEffCat === 4) return { ok: true, note: 'Ecash tokens will be melted at the Mint.' };
     return { ok: true };
 }
@@ -730,7 +810,13 @@ function isPaymentCompatible(payerEffCat, codeType) {
 // CODE GENERATION
 // =====================================================================
 function generateCode(walletId, type, amount) {
-    if (isNaN(amount) || amount <= 0) { alert('Please enter a valid amount in satoshis.'); return; }
+    const amountDefinedBy = (type === 'LN') ? 'receiver' : 'sender';
+
+    // Validate amount only for receiver-defined codes (LN Invoice)
+    if (amountDefinedBy === 'receiver') {
+        if (isNaN(amount) || amount <= 0) { alert('Please enter a valid amount in satoshis.'); return; }
+    }
+
     const creator = wallets.find(w => w.id === walletId);
     if (!creator) return;
 
@@ -739,16 +825,27 @@ function generateCode(walletId, type, amount) {
     if (type === 'L1') code = `bc1p${rand}7xq360q77vjuu`;
     else if (type === 'LN') code = `lnbc${amount}n1p${rand}qsp59x2...`;
     else if (type === 'LNURL') code = `lnurl1dp68gurn8ghj7${rand}...`;
-    else if (type === 'ECASH') code = `cashuA${rand.toUpperCase()}...`;
+    else if (type === 'ECASH') code = `cashuPayReq${rand.toUpperCase()}...`;
 
-    activeCode = { type, amount, code, creatorId: walletId };
+    activeCode = { type, originalType: type, amount, code, creatorId: walletId, amountDefinedBy };
 
     document.getElementById('hub-state-title').textContent = `Code Available (To: ${creator.name})`;
-    document.getElementById('hub-code-display').textContent = `[${type}] ${amount.toLocaleString()} sats: ${code}`;
+
+    if (amountDefinedBy === 'receiver') {
+        document.getElementById('hub-code-display').textContent = `[${type}] ${amount.toLocaleString()} sats: ${code}`;
+    } else {
+        document.getElementById('hub-code-display').textContent = `[${type}] ${code} — Amount: to be defined by sender`;
+    }
 
     closeModals();
     renderAll();
-    document.getElementById('step-text').innerHTML = `📢 <strong>Receive code broadcast.</strong> Now click the wallet that will <strong>SEND</strong> (pay this code).`;
+
+    if (amountDefinedBy === 'receiver') {
+        document.getElementById('step-text').innerHTML = `📢 <strong>Lightning invoice broadcast (${amount.toLocaleString()} sats).</strong> Now click the wallet that will <strong>SEND</strong> (pay this code).`;
+    } else {
+        const typeLabels = { 'L1': 'Bitcoin address', 'LNURL': 'Lightning Address', 'ECASH': 'Ecash payment request' };
+        document.getElementById('step-text').innerHTML = `📢 <strong>${typeLabels[type]} broadcast.</strong> Now click the wallet that will <strong>SEND</strong>. The sender will define the amount.`;
+    }
 }
 
 // =====================================================================
@@ -759,7 +856,20 @@ function startTransaction(payerId) {
     const receiver = wallets.find(w => w.id === activeCode.creatorId);
     if (!payer || !receiver) return;
 
-    const amount = activeCode.amount;
+    // Resolve amount based on who defines it
+    let amount;
+    if (activeCode.amountDefinedBy === 'sender') {
+        const amtInput = document.getElementById(`send-amount-${payer.id}`);
+        amount = parseInt(amtInput ? amtInput.value : 0);
+        if (isNaN(amount) || amount <= 0) {
+            alert('Please enter a valid amount in satoshis.');
+            return;
+        }
+        activeCode.amount = amount;
+    } else {
+        amount = activeCode.amount;
+    }
+
     if (payer.balance < amount) {
         alert(`Insufficient funds in ${payer.name}. Balance: ${payer.balance.toLocaleString()} sats, needed: ${amount.toLocaleString()} sats.`);
         return;
@@ -769,10 +879,20 @@ function startTransaction(payerId) {
     const isCongested = document.getElementById('congestion-toggle').checked;
     const pCat = getEffCat(payer);
     const rCat = getEffCat(receiver);
-    const codeType = activeCode.type === 'LNURL' ? 'LN' : activeCode.type; // LNURL resolves to LN
+    const originalType = activeCode.originalType;
+    const codeType = (originalType === 'LNURL') ? 'LN' : originalType; // LNURL resolves to LN for routing
 
-    // Calculate fees
-    const fees = calcFees(pCat, rCat, codeType, amount, isCongested);
+    // Calculate MPP splits for large LN payments
+    const isLnRouted = (codeType === 'LN') && pCat !== 5;
+    const mppSplits = (isLnRouted && amount > 1000000) ? Math.min(Math.ceil(amount / 500000), 5) : 1;
+    const mppActive = mppSplits > 1;
+    const routingFailWarning = isLnRouted && amount > 10000000;
+
+    // Update hub display with resolved amount
+    document.getElementById('hub-code-display').textContent = `[${activeCode.type}] ${amount.toLocaleString()} sats: ${activeCode.code}`;
+
+    // Calculate fees (with MPP multiplier)
+    const fees = calcFees(pCat, rCat, codeType, amount, isCongested, mppSplits);
     const totalCost = amount + fees.total;
 
     if (payer.balance < totalCost) {
@@ -785,7 +905,7 @@ function startTransaction(payerId) {
 
     // Step 0: Approval
     txSteps.push({
-        text: buildApprovalText(pCat, codeType, amount, fees, isCongested),
+        text: buildApprovalText(pCat, codeType, amount, fees, isCongested, mppActive, mppSplits, routingFailWarning),
         bubble: '🔐 Approval',
         interactive: true,
         action: 'prompt',
@@ -796,7 +916,7 @@ function startTransaction(payerId) {
     // Special: Ecash Same-Mint
     if (codeType === 'ECASH') {
         txSteps.push({
-            text: 'Your wallet transfers the Ecash token data to the recipient. The recipient submits these tokens to the Chaumian Mint to swap for fresh ones (double-spend prevention).',
+            text: 'Your wallet creates Ecash tokens for the specified amount. The tokens are sent to the recipient, who submits them to the Chaumian Mint to swap for fresh ones (double-spend prevention).',
             bubble: '🪙 Token Swap',
             path: [`token-${payer.id}`, 'node-mint']
         });
@@ -810,16 +930,75 @@ function startTransaction(payerId) {
         return;
     }
 
+    // Routing failure warning for very large amounts
+    if (routingFailWarning) {
+        txSteps.push({
+            text: `⚠️ This payment amount (${amount.toLocaleString()} sats = ${(amount / 100000000).toFixed(4)} BTC) exceeds the practical routing capacity of the Lightning Network. In real life, payments above ~0.1 BTC frequently fail due to insufficient path liquidity. Consider using an L1 on-chain transaction for large amounts.`,
+            bubble: '⚠️ Route Risk',
+            path: null,
+            targetNode: `token-${payer.id}`,
+            warning: true
+        });
+    }
+
+    // LNURL resolution steps (before normal LN departure)
+    if (originalType === 'LNURL') {
+        txSteps.push(...buildLnurlResolutionSteps(payer, receiver, amount));
+    }
+
+    // Calculate splice for receiver-side liquidity (Cat 1, 2b)
+    const needsSplice = (rCat === 1 || rCat === '2b') && codeType === 'LN' && receiver.inboundLiquidity !== null && amount > receiver.inboundLiquidity;
+    const spliceMining = isCongested ? 15000 : 1000;
+    const spliceFee = needsSplice ? (Math.floor(amount * 0.01) + spliceMining) : 0;
+    const netReceived = amount - spliceFee;
+
     // Build departure steps
-    txSteps.push(...buildDepartureSteps(payer, receiver, codeType, isCongested));
+    txSteps.push(...buildDepartureSteps(payer, receiver, codeType, isCongested, mppActive, mppSplits));
 
     // Build arrival steps
-    txSteps.push(...buildArrivalSteps(payer, receiver, codeType, isCongested, amount, totalCost, payerId));
+    txSteps.push(...buildArrivalSteps(payer, receiver, codeType, isCongested, amount, totalCost, payerId, needsSplice, spliceFee, netReceived));
 
     runStepEngine();
 }
 
-function calcFees(pCat, rCat, codeType, amount, congested) {
+function buildLnurlResolutionSteps(payer, receiver, amount) {
+    const pId = `token-${payer.id}`;
+    const rCat = getEffCat(receiver);
+    const steps = [];
+
+    // Determine which server hosts the LNURL endpoint based on receiver's category
+    let endpointNode, endpointLabel;
+    if (rCat === 1 || rCat === '2b') {
+        endpointNode = 'node-lsp';
+        endpointLabel = "receiver's LSP";
+    } else if (rCat === 4) {
+        endpointNode = 'node-mint';
+        endpointLabel = "Chaumian Mint's server";
+    } else if (rCat === 5) {
+        endpointNode = 'node-custodial';
+        endpointLabel = "company's backend server";
+    } else {
+        endpointNode = 'node-ln';
+        endpointLabel = "receiver's Lightning node";
+    }
+
+    steps.push({
+        text: `Your wallet contacts the LNURL-pay endpoint hosted by the ${endpointLabel}. It requests payment parameters (metadata, callback URL).`,
+        bubble: '🔗 LNURL Resolve',
+        path: [pId, endpointNode]
+    });
+
+    steps.push({
+        text: `The ${endpointLabel} generates a fresh single-use BOLT11 invoice for ${amount.toLocaleString()} sats and returns it to your wallet. From here, payment proceeds as a standard Lightning transaction.`,
+        bubble: '📄 Invoice Ready',
+        path: [endpointNode, pId]
+    });
+
+    return steps;
+}
+
+function calcFees(pCat, rCat, codeType, amount, congested, mppSplits) {
+    mppSplits = mppSplits || 1;
     let mining = 0, routing = 0, swap = 0, mint = 0;
 
     const needsOnChain = (codeType === 'L1') || (pCat === 0 && codeType === 'LN') || (pCat === 3 && codeType === 'LN' && congested);
@@ -833,6 +1012,9 @@ function calcFees(pCat, rCat, codeType, amount, congested) {
         else if (pCat === 3) { swap = congested ? Math.max(50, Math.floor(amount * 0.003)) : 0; routing = congested ? 0 : 2; }
         else if (pCat === 4) { mint = 2; routing = 3; }
         else if (pCat === 5) routing = 1;
+
+        // MPP multiplies routing fees (each path pays its own base + proportional fee)
+        if (mppSplits > 1) routing = routing * mppSplits;
     }
 
     if (codeType === 'L1' && pCat !== 0 && pCat !== 3 && pCat !== 5) {
@@ -843,8 +1025,10 @@ function calcFees(pCat, rCat, codeType, amount, congested) {
     return { mining, routing, swap, mint, total: mining + routing + swap + mint };
 }
 
-function buildApprovalText(pCat, codeType, amount, fees, congested) {
+function buildApprovalText(pCat, codeType, amount, fees, congested, mppActive, mppSplits, routingFailWarning) {
     const feeStr = fees.total > 0 ? ` Estimated fees: ${fees.total.toLocaleString()} sats.` : '';
+    const mppStr = mppActive ? `\n\n📦 Multi-Path Payment: Amount will be split into ${mppSplits} parts across different Lightning routes (routing fees ×${mppSplits}).` : '';
+    const failStr = routingFailWarning ? `\n\n⚠️ ROUTE WARNING: This amount exceeds typical LN routing capacity (~0.1 BTC). High probability of routing failure in real-world conditions.` : '';
 
     if (codeType === 'ECASH') return `Transfer Ecash tokens to another wallet on the same Mint? Amount: ${amount.toLocaleString()} sats. Instant and private.`;
 
@@ -854,18 +1038,28 @@ function buildApprovalText(pCat, codeType, amount, fees, congested) {
     }
 
     // LN
-    if (pCat === 0) return `Reverse Submarine Swap: Your on-chain BTC will be locked in an HTLC. A Swap Provider will pay the Lightning invoice. Amount: ${amount.toLocaleString()} sats.${feeStr}`;
-    if (pCat === 3 && congested) return `Full Submarine Swap required (high congestion). On-chain HTLC will be constructed. Amount: ${amount.toLocaleString()} sats.${feeStr}`;
-    if (pCat === 3) return `Payment via Swap Provider. Your wallet co-signs with Muun servers (2-of-2 multisig). Amount: ${amount.toLocaleString()} sats.${feeStr}`;
-    if (pCat === 4) return `Melt Ecash tokens: Tokens sent to Mint for burning. Mint's LN node pays the invoice. Amount: ${amount.toLocaleString()} sats.${feeStr}`;
+    if (pCat === 0) return `Submarine Swap required: Your on-chain BTC will be locked in an HTLC. A Swap Provider will pay the Lightning invoice on your behalf. Amount: ${amount.toLocaleString()} sats.${feeStr}${mppStr}${failStr}\n\n💡 Note: Pure on-chain wallets (e.g. Sparrow) cannot perform this natively. This operation requires an external swap service such as Boltz. Some wallets (e.g. Aqua) have swap services built-in.`;
+    if (pCat === 3 && congested) return `Full Submarine Swap required (high congestion). On-chain HTLC will be constructed. Amount: ${amount.toLocaleString()} sats.${feeStr}${mppStr}${failStr}`;
+    if (pCat === 3) return `Payment via Swap Provider. Your wallet co-signs with Muun servers (2-of-2 multisig). Amount: ${amount.toLocaleString()} sats.${feeStr}${mppStr}${failStr}`;
+    if (pCat === 4) return `Melt Ecash tokens: Tokens sent to Mint for burning. Mint's LN node pays the invoice. Amount: ${amount.toLocaleString()} sats.${feeStr}${mppStr}${failStr}`;
     if (pCat === 5) return `Authorize payment? The company will debit your account and pay via its Lightning node. Amount: ${amount.toLocaleString()} sats.${feeStr}`;
-    return `Authorize Lightning payment of ${amount.toLocaleString()} sats?${feeStr}`;
+    return `Authorize Lightning payment of ${amount.toLocaleString()} sats?${feeStr}${mppStr}${failStr}`;
 }
 
-function buildDepartureSteps(payer, receiver, codeType, congested) {
+function buildDepartureSteps(payer, receiver, codeType, congested, mppActive, mppSplits) {
     const pId = `token-${payer.id}`;
     const pCat = getEffCat(payer);
     const steps = [];
+
+    // MPP splitting step for large LN payments
+    if (mppActive && codeType === 'LN') {
+        steps.push({
+            text: `Payment amount exceeds typical single-channel liquidity. Your wallet splits the payment into ${mppSplits} parts using Multi-Path Payments (MPP). Each part will be routed independently through different paths in the Lightning Network.`,
+            bubble: '📦 MPP Split',
+            path: null,
+            targetNode: pId
+        });
+    }
 
     if (codeType === 'L1') {
         // ===== PAYING AN L1 ADDRESS =====
@@ -916,7 +1110,7 @@ function buildDepartureSteps(payer, receiver, codeType, congested) {
         // ===== PAYING A LN INVOICE =====
         switch (pCat) {
             case 0:
-                // L1 → Reverse Submarine Swap
+                // L1 → Submarine Swap (on-chain → LN)
                 steps.push({ text: 'Your wallet constructs an on-chain Hash Time-Locked Contract (HTLC) and broadcasts it to the Bitcoin Mempool.', bubble: '🔒 HTLC', path: [pId, 'node-mempool'] });
                 if (congested) steps.push({ text: '⚠️ High congestion! The HTLC transaction waits in the Mempool for miners.', bubble: '⚠️ Congested', path: [pId, 'node-mempool'], warning: true });
                 steps.push({ text: 'Miners confirm the HTLC on the Blockchain. Funds are locked and claimable only with the payment preimage.', bubble: '⛏️ HTLC Locked', path: ['node-mempool', 'node-blockchain'] });
@@ -961,7 +1155,7 @@ function buildDepartureSteps(payer, receiver, codeType, congested) {
     return steps;
 }
 
-function buildArrivalSteps(payer, receiver, codeType, congested, amount, totalCost, payerId) {
+function buildArrivalSteps(payer, receiver, codeType, congested, amount, totalCost, payerId, needsSplice, spliceFee, netReceived) {
     const rId = `token-${receiver.id}`;
     const rCat = getEffCat(receiver);
     const steps = [];
@@ -980,14 +1174,55 @@ function buildArrivalSteps(payer, receiver, codeType, congested, amount, totalCo
         switch (rCat) {
             case 1:
             case '2b':
-                steps.push({
-                    text: "The Lightning Network delivers the payment to the receiver's LSP, which forwards it to the mobile wallet through their shared channel. Balance confirmed.",
-                    bubble: '✅ Received',
-                    path: ['node-ln', rId],
-                    ...settleData
-                });
+                if (needsSplice) {
+                    steps.push({
+                        text: `The payment (${amount.toLocaleString()} sats) exceeds the receiver's channel inbound liquidity (${receiver.inboundLiquidity.toLocaleString()} sats available). The receiver's LSP initiates an on-chain splice to expand channel capacity.`,
+                        bubble: '🔧 Splice',
+                        path: ['node-ln', 'node-lsp'],
+                        warning: true
+                    });
+                    steps.push({
+                        text: `The LSP broadcasts the splice transaction to the Mempool. Splice fee: 1% (${Math.floor(amount * 0.01).toLocaleString()} sats) + mining (${(congested ? 15000 : 1000).toLocaleString()} sats) = ${spliceFee.toLocaleString()} sats total — deducted from the received amount.`,
+                        bubble: '📡 Splice TX',
+                        path: ['node-lsp', 'node-mempool']
+                    });
+                    if (congested) {
+                        steps.push({
+                            text: '⚠️ High L1 congestion! The splice transaction competes for block space. The mining fee component is significantly higher, increasing the cost to the receiver.',
+                            bubble: '⚠️ Congested',
+                            path: ['node-lsp', 'node-mempool'],
+                            warning: true
+                        });
+                    }
+                    steps.push({
+                        text: 'Miners pick up the splice transaction from the Mempool and include it in a block on the Bitcoin Blockchain. The splice is now confirmed on-chain.',
+                        bubble: '⛏️ Mined',
+                        path: ['node-mempool', 'node-blockchain']
+                    });
+                    steps.push({
+                        text: `Splice confirmed. Channel capacity expanded. Receiver gets ${netReceived.toLocaleString()} sats (net of ${spliceFee.toLocaleString()} sats splice fee). Note: The receiver had no opportunity to approve this fee — it was deducted automatically by the LSP.`,
+                        bubble: '✅ Spliced',
+                        path: ['node-blockchain', rId],
+                        action: 'settle', payerId, receiverId: receiver.id, cost: totalCost, earn: netReceived, spliceOccurred: true
+                    });
+                } else {
+                    steps.push({
+                        text: `Payment fits within the receiver's existing channel capacity (${receiver.inboundLiquidity !== null ? receiver.inboundLiquidity.toLocaleString() : '?'} sats inbound available). The LSP forwards the payment to the mobile wallet — no on-chain activity needed.`,
+                        bubble: '✅ Received',
+                        path: ['node-ln', rId],
+                        ...settleData
+                    });
+                }
                 break;
             case '2a':
+                if (receiver.inboundLiquidity !== null && amount > receiver.inboundLiquidity) {
+                    steps.push({
+                        text: `⚠️ This payment (${amount.toLocaleString()} sats) exceeds the receiver's channel inbound capacity (${receiver.inboundLiquidity.toLocaleString()} sats). In real life, a sovereign node operator would need to open a new channel or acquire more inbound liquidity. Proceeding for demonstration.`,
+                        bubble: '⚠️ Low Capacity',
+                        path: ['node-ln', rId],
+                        warning: true
+                    });
+                }
                 steps.push({
                     text: "The payment arrives directly at the receiver's sovereign node through the Lightning Network. Channel state updated.",
                     bubble: '✅ Received',
@@ -1110,7 +1345,7 @@ function showApprovalPrompt(step) {
 function nextStep() {
     const step = txSteps[stepIdx];
     if (step && step.action === 'settle' && stepIdx === txSteps.length - 1) {
-        applyBalances(step.payerId, step.receiverId, step.cost, step.earn);
+        applyBalances(step.payerId, step.receiverId, step.cost, step.earn, step.spliceOccurred);
         alert('Transaction Completed Successfully!\nGlobal balances have been updated.');
         resetSimulation();
         renderAll();
@@ -1131,11 +1366,28 @@ function prevStep() {
     }
 }
 
-function applyBalances(pId, rId, cost, earn) {
+function applyBalances(pId, rId, cost, earn, spliceOccurred) {
     const payer = wallets.find(w => w.id === pId);
     const receiver = wallets.find(w => w.id === rId);
-    if (payer) payer.balance -= cost;
-    if (receiver) receiver.balance += earn;
+    if (payer) {
+        payer.balance -= cost;
+        // Sending frees up inbound capacity on the sender's channel
+        if (payer.inboundLiquidity !== null) {
+            payer.inboundLiquidity += earn;
+        }
+    }
+    if (receiver) {
+        receiver.balance += earn;
+        // Update inbound liquidity for channel-based wallets
+        if (receiver.inboundLiquidity !== null) {
+            if (spliceOccurred) {
+                // After splice, LSP provisions new capacity equal to the received amount
+                receiver.inboundLiquidity = earn;
+            } else {
+                receiver.inboundLiquidity = Math.max(0, receiver.inboundLiquidity - earn);
+            }
+        }
+    }
 }
 
 function resetSimulation() {
@@ -1236,8 +1488,6 @@ function setupDragAndDrop() {
             if (w) {
                 w.x = (nx / cr.width) * 100;
                 w.y = (ny / cr.height) * 100;
-                const modal = document.getElementById(`modal-${id}`);
-                if (modal) { modal.style.left = `${Math.min(w.x + 2, 75)}%`; modal.style.top = `${Math.min(w.y + 11, 70)}%`; }
             }
         }
 
