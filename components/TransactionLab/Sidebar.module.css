@@ -1,0 +1,412 @@
+/* Sidebar — wallet creation, list, detail panel, and simulation controls.
+   Follows QL_Transaction_Lab_Spec.md Rule IV:
+   - CSS Modules only (no Tailwind)
+   - Colors via CSS custom properties (no hard-coded hex values) */
+
+/* ── Container ── */
+
+.sidebar {
+  width: 320px;
+  min-width: 320px;
+  background-color: var(--bg-panel);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  overflow-y: auto;
+  z-index: 10;
+}
+
+/* ── Section headings ── */
+
+.sectionHeading {
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin: 18px 0 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ── Congestion toggle ── */
+
+.controlGroup {
+  margin-bottom: 12px;
+}
+
+.controlLabel {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.toggleContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-card);
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+
+.toggleLabel {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 24px;
+}
+
+.switchInput {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: #333;
+  transition: 0.3s;
+  border-radius: 24px;
+}
+
+.slider::before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background: #fff;
+  transition: 0.3s;
+  border-radius: 50%;
+}
+
+.switchInput:checked + .slider {
+  background-color: var(--danger);
+}
+
+.switchInput:checked + .slider::before {
+  transform: translateX(22px);
+}
+
+.toggleHint {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+/* ── Form inputs ── */
+
+.input,
+.select {
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background-color: var(--bg-card);
+  color: var(--foreground);
+  font-size: 0.85rem;
+  outline: none;
+  transition: border-color 0.2s;
+  font-family: inherit;
+}
+
+.input:focus,
+.select:focus {
+  border-color: var(--primary);
+}
+
+.inputError {
+  border-color: var(--danger);
+}
+
+/* ── Buttons ── */
+
+.btnPrimary {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  background-color: var(--primary);
+  color: #000;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  margin-top: 4px;
+}
+
+.btnPrimary:hover:not(:disabled) {
+  background-color: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.btnPrimary:disabled {
+  background-color: var(--bg-card);
+  color: var(--text-dim);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btnSecondary {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--foreground);
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  margin-top: 4px;
+}
+
+.btnSecondary:hover:not(:disabled) {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: var(--primary-glow);
+}
+
+.btnSecondary:disabled {
+  color: var(--text-dim);
+  cursor: not-allowed;
+}
+
+/* ── Wallet list ── */
+
+.walletList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.walletListItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: var(--bg-card);
+  border-radius: 8px;
+  margin-bottom: 5px;
+  border-left: 3px solid var(--primary);
+  font-size: 0.8rem;
+  transition: background 0.2s;
+  cursor: pointer;
+  color: var(--foreground);
+}
+
+.walletListItem:hover {
+  background: var(--bg-card-hover);
+}
+
+.walletListItemSelected {
+  background: var(--bg-card-hover);
+  box-shadow: inset 0 0 0 1px var(--primary-glow);
+}
+
+/* Category border variants */
+.cat0 { border-left-color: var(--cat-0); }
+.cat1 { border-left-color: var(--cat-1); }
+.cat2 { border-left-color: var(--cat-2); }
+.cat3 { border-left-color: var(--cat-3); }
+.cat4 { border-left-color: var(--cat-4); }
+.cat5 { border-left-color: var(--cat-5); }
+
+.walletName {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.deleteBtn {
+  background: transparent;
+  color: var(--danger);
+  width: auto;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  border: none;
+  margin: 0;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.2s;
+  font-family: inherit;
+  flex-shrink: 0;
+}
+
+.deleteBtn:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+/* ── Detail panel ── */
+
+.detailPanel {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid var(--border);
+}
+
+.placeholder {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  text-align: center;
+  padding: 20px 12px;
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+}
+
+/* ── Modal / detail card ── */
+
+.detailCard {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  width: 100%;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detailHeading {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--primary);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 6px;
+}
+
+.detailInfo {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+}
+
+.detailInfoAccent {
+  font-size: 0.75rem;
+  color: var(--accent);
+}
+
+.detailInfoDanger {
+  font-size: 0.75rem;
+  color: var(--danger);
+}
+
+.detailInfoSuccess {
+  font-size: 0.75rem;
+  color: var(--success);
+}
+
+.detailInfoWarning {
+  font-size: 0.75rem;
+  color: var(--warning);
+}
+
+.sectionLabel {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+
+/* ── Code type tags ── */
+
+.codeTypeTag {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-left: 6px;
+}
+
+.tagDynamic {
+  background: rgba(34, 197, 94, 0.15);
+  color: var(--success);
+}
+
+.tagStatic {
+  background: rgba(139, 92, 246, 0.15);
+  color: var(--accent);
+}
+
+/* ── Inline errors ── */
+
+.inlineError {
+  font-size: 0.75rem;
+  color: var(--danger);
+  margin-top: 4px;
+  min-height: 1.1em;
+}
+
+/* ── Receive button row ── */
+
+.receiveRow {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 4px;
+}
+
+.receiveHint {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  margin-left: 8px;
+}
+
+/* ── Amount input row ── */
+
+.amountLabel {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 8px;
+  display: block;
+}
+
+.balanceHint {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+}
+
+/* ── Footer ── */
+
+.footer {
+  margin-top: auto;
+  padding-top: 15px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+.footerText {
+  font-size: 0.65rem;
+  color: var(--text-dim);
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 900px) {
+  .sidebar {
+    width: 260px;
+    min-width: 260px;
+    padding: 15px;
+  }
+}

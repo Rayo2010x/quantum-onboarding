@@ -1,0 +1,86 @@
+/* PlaybackPanel — bottom-bar simulation step display and navigation.
+   Follows QL_Transaction_Lab_Spec.md Rule IV:
+   - CSS Modules only (no Tailwind)
+   - Colors via CSS custom properties */
+
+.panel {
+  background: var(--bg-panel);
+  border-top: 1px solid var(--border);
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 10;
+  min-height: 56px;
+  gap: 16px;
+}
+
+.stepText {
+  font-size: 0.85rem;
+  font-weight: 500;
+  flex: 1;
+  min-width: 0;
+  line-height: 1.5;
+  color: var(--foreground);
+}
+
+.stepText strong {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.stepTitle {
+  font-weight: 700;
+  color: var(--accent);
+  margin-right: 2px;
+}
+
+.controls {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.btnPrimary,
+.btnSecondary {
+  width: 100px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  border: none;
+}
+
+.btnPrimary {
+  background-color: var(--primary);
+  color: #000;
+}
+
+.btnPrimary:hover:not(:disabled) {
+  background-color: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.btnSecondary {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--foreground);
+}
+
+.btnSecondary:hover:not(:disabled) {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: var(--primary-glow);
+}
+
+.btnPrimary:disabled,
+.btnSecondary:disabled {
+  background-color: var(--bg-card);
+  color: var(--text-dim);
+  cursor: not-allowed;
+  transform: none;
+  border-color: var(--border);
+}

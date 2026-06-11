@@ -1,9 +1,45 @@
 :root {
+  /* ── Core palette ── */
   --background: #0a0a0a;
   --foreground: #ededed;
   --primary: #f7931a;
   --primary-hover: #e08210;
+  --primary-glow: rgba(247, 147, 26, 0.15);
   --accent: #8b5cf6;
+  --accent-glow: rgba(139, 92, 246, 0.15);
+
+  /* ── Semantic colors ── */
+  --success: #22c55e;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+
+  /* ── Surface & text ── */
+  --bg-panel: #111111;
+  --bg-card: #1a1a1a;
+  --bg-card-hover: #222222;
+  --text-muted: #888888;
+  --text-dim: #555555;
+
+  /* ── Borders ── */
+  --border: #2a2a2a;
+  --border-light: #333333;
+
+  /* ── Wallet category colors ── */
+  --cat-0: #e2e8f0;
+  --cat-1: #38bdf8;
+  --cat-2: #06b6d4;
+  --cat-3: #f7931a;
+  --cat-4: #a78bfa;
+  --cat-5: #94a3b8;
+
+  /* ── Infrastructure node colors ── */
+  --infra-mempool: #ef4444;
+  --infra-blockchain: #e2e8f0;
+  --infra-lsp: #38bdf8;
+  --infra-ln: #3b82f6;
+  --infra-mint: #a78bfa;
+  --infra-swap: #f59e0b;
+  --infra-custodial: #64748b;
 }
 
 @media (prefers-color-scheme: dark) {

@@ -1,0 +1,42 @@
+/* Legend — floating visual key for wallet technology categories.
+   Follows QL_Transaction_Lab_Spec.md Rule IV:
+   - CSS Modules only (no Tailwind)
+   - Colors via CSS custom properties */
+
+.container {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: rgba(17, 17, 17, 0.92);
+  backdrop-filter: blur(8px);
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  font-size: 0.7rem;
+  z-index: 6;
+  pointer-events: none;
+}
+
+.title {
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.65rem;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 3px;
+  color: var(--text-muted);
+}
+
+.swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
