@@ -279,12 +279,12 @@ function buildDepartureSteps(
         }
         steps.push({
           title: 'Mining',
-          text: 'Miners confirm the transaction on the Blockchain.',
+          text: 'The Mempool releases the transaction to the miners, who confirm it on the Blockchain.',
           sourceNodeId: 'node-mempool',
           targetNodeId: 'node-blockchain',
           activePath: 'mempool-to-blockchain',
           highlightNodes: ['node-mempool', 'node-blockchain'],
-          messageBubble: { text: '⛏️ Mining', type: 'success', targetId: 'node-mempool', targetType: 'node' },
+          messageBubble: { text: '⛏️ Confirming', type: 'success', targetId: 'node-mempool', targetType: 'node' },
         });
         break;
 
@@ -329,12 +329,12 @@ function buildDepartureSteps(
         }
         steps.push({
           title: 'Mining',
-          text: 'Miners confirm the transaction on the Blockchain.',
+          text: 'The Mempool releases the transaction to the miners, who confirm it on the Blockchain.',
           sourceNodeId: 'node-mempool',
           targetNodeId: 'node-blockchain',
           activePath: 'mempool-to-blockchain',
           highlightNodes: ['node-mempool', 'node-blockchain'],
-          messageBubble: { text: '⛏️ Mining', type: 'success', targetId: 'node-mempool', targetType: 'node' },
+          messageBubble: { text: '⛏️ Confirming', type: 'success', targetId: 'node-mempool', targetType: 'node' },
         });
         break;
 
@@ -388,12 +388,12 @@ function buildDepartureSteps(
         }
         steps.push({
           title: 'Mining',
-          text: 'Miners confirm the transaction on the Blockchain.',
+          text: 'The Mempool releases the transaction to the miners, who confirm it on the Blockchain.',
           sourceNodeId: 'node-mempool',
           targetNodeId: 'node-blockchain',
           activePath: 'mempool-to-blockchain',
           highlightNodes: ['node-mempool', 'node-blockchain'],
-          messageBubble: { text: '⛏️ Mining', type: 'success', targetId: 'node-mempool', targetType: 'node' },
+          messageBubble: { text: '⛏️ Confirming', type: 'success', targetId: 'node-mempool', targetType: 'node' },
         });
         break;
 
@@ -429,12 +429,12 @@ function buildDepartureSteps(
         }
         steps.push({
           title: 'Mining',
-          text: 'Miners confirm the transaction on the Blockchain.',
+          text: 'The Mempool releases the transaction to the miners, who confirm it on the Blockchain.',
           sourceNodeId: 'node-mempool',
           targetNodeId: 'node-blockchain',
           activePath: 'mempool-to-blockchain',
           highlightNodes: ['node-mempool', 'node-blockchain'],
-          messageBubble: { text: '⛏️ Mining', type: 'success', targetId: 'node-mempool', targetType: 'node' },
+          messageBubble: { text: '⛏️ Confirming', type: 'success', targetId: 'node-mempool', targetType: 'node' },
         });
         break;
     }
@@ -464,7 +464,7 @@ function buildDepartureSteps(
         }
         steps.push({
           title: 'HTLC Locked',
-          text: 'Miners confirm the HTLC on the Blockchain. Funds are locked and claimable only with the payment preimage.',
+          text: 'The Mempool releases the HTLC transaction to the miners, locking the funds into the Blockchain ledger.',
           sourceNodeId: 'node-mempool',
           targetNodeId: 'node-blockchain',
           activePath: 'mempool-to-blockchain',
@@ -473,12 +473,12 @@ function buildDepartureSteps(
         });
         steps.push({
           title: 'Swap Detection',
-          text: 'The Swap Provider detects the confirmed on-chain HTLC and prepares to fulfill the Lightning invoice.',
+          text: 'The Blockchain broadcasts the confirmed HTLC output, making the transaction visible to the Swap Provider.',
           sourceNodeId: 'node-blockchain',
           targetNodeId: 'node-swap',
           activePath: 'blockchain-to-swap',
           highlightNodes: ['node-blockchain', 'node-swap'],
-          messageBubble: { text: '👁️ Detected', type: 'success', targetId: 'node-blockchain', targetType: 'node' },
+          messageBubble: { text: '⛓️ Broadcast', type: 'success', targetId: 'node-blockchain', targetType: 'node' },
         });
         steps.push({
           title: 'LN Payment',
@@ -669,12 +669,12 @@ function buildArrivalSteps(
     // All L1 arrivals: Blockchain → Receiver
     steps.push({
       title: 'Settled',
-      text: "The Blockchain records the new UTXO. The receiver's wallet detects the confirmed output and updates its balance.",
+      text: "The Blockchain records the new UTXO output, allowing the receiver's wallet to update its balance.",
       sourceNodeId: 'node-blockchain',
       targetWalletId: receiver.id,
       activePath: 'blockchain-to-wallet',
       highlightNodes: ['node-blockchain', `wallet-${receiver.id}`],
-      messageBubble: { text: '✅ Settled', type: 'success', targetId: receiver.id, targetType: 'wallet' },
+      messageBubble: { text: '⛓️ Confirm', type: 'success', targetId: 'node-blockchain', targetType: 'node' },
       balanceUpdates: [
         { walletId: payer.id, balanceDiff: -totalCost, inboundDiff: payer.inboundLiquidity !== null ? amount : undefined },
         { walletId: receiver.id, balanceDiff: amount },
@@ -689,12 +689,12 @@ function buildArrivalSteps(
           // Splice-In / Channel Setup required
           steps.push({
             title: 'Splice-In Required',
-            text: `The payment (<strong>${amount.toLocaleString()} sats</strong>) exceeds the receiver's channel inbound liquidity (<strong>${(receiver.inboundLiquidity ?? 0).toLocaleString()} sats</strong> available). The receiver's LSP initiates an on-chain splice to expand channel capacity.`,
+            text: `The Lightning Network attempts to route the payment (<strong>${amount.toLocaleString()} sats</strong>), but detects that the receiver's inbound liquidity (<strong>${(receiver.inboundLiquidity ?? 0).toLocaleString()} sats</strong> available) is insufficient. It requests a channel splice from the LSP.`,
             sourceNodeId: 'node-ln',
             targetNodeId: 'node-lsp',
             activePath: 'ln-to-lsp',
             highlightNodes: ['node-ln', 'node-lsp'],
-            messageBubble: { text: '🔧 Splice-In', type: 'warning', targetId: 'node-lsp', targetType: 'node' },
+            messageBubble: { text: '⚠️ Limit', type: 'warning', targetId: 'node-ln', targetType: 'node' },
           });
           steps.push({
             title: 'Splice TX Broadcast',
@@ -728,12 +728,12 @@ function buildArrivalSteps(
           const netReceived = amount - SETUP_FEE;
           steps.push({
             title: 'Channel Expanded',
-            text: `Splice confirmed. Channel capacity expanded. Receiver gets <strong>${netReceived.toLocaleString()} sats</strong> (net of ${SETUP_FEE.toLocaleString()} sats setup fee). Inbound liquidity increased by 500,000 sats.`,
+            text: `The Blockchain confirms the splice transaction, expanding the channel capacity and settling <strong>${netReceived.toLocaleString()} sats</strong> (net of ${SETUP_FEE.toLocaleString()} sats setup fee). Inbound liquidity increased by 500,000 sats.`,
             sourceNodeId: 'node-blockchain',
             targetWalletId: receiver.id,
             activePath: 'blockchain-to-wallet',
             highlightNodes: ['node-blockchain', `wallet-${receiver.id}`],
-            messageBubble: { text: '✅ Spliced', type: 'success', targetId: receiver.id, targetType: 'wallet' },
+            messageBubble: { text: '⛓️ Confirm', type: 'success', targetId: 'node-blockchain', targetType: 'node' },
             balanceUpdates: [
               { walletId: payer.id, balanceDiff: -totalCost, inboundDiff: payer.inboundLiquidity !== null ? amount : undefined },
               { walletId: receiver.id, balanceDiff: netReceived, inboundDiff: 500_000 },
@@ -743,12 +743,12 @@ function buildArrivalSteps(
           // Normal LN arrival — fits within existing capacity
           steps.push({
             title: 'Received',
-            text: `Payment fits within the receiver's existing channel capacity (${(receiver.inboundLiquidity ?? 0).toLocaleString()} sats inbound available). The LSP forwards the payment to the wallet — no on-chain activity needed.`,
+            text: `The Lightning Network routes and delivers the payment directly to the receiver's wallet, settling it instantly within existing capacity (${(receiver.inboundLiquidity ?? 0).toLocaleString()} sats inbound available).`,
             sourceNodeId: 'node-ln',
             targetWalletId: receiver.id,
             activePath: 'ln-to-wallet',
             highlightNodes: ['node-ln', `wallet-${receiver.id}`],
-            messageBubble: { text: '✅ Received', type: 'success', targetId: receiver.id, targetType: 'wallet' },
+            messageBubble: { text: '⚡ Delivery', type: 'success', targetId: 'node-ln', targetType: 'node' },
             balanceUpdates: [
               { walletId: payer.id, balanceDiff: -totalCost, inboundDiff: payer.inboundLiquidity !== null ? amount : undefined },
               {
@@ -764,12 +764,12 @@ function buildArrivalSteps(
       case '2a':
         steps.push({
           title: 'Received',
-          text: "The payment arrives directly at the receiver's sovereign node through the Lightning Network. Channel state updated.",
+          text: "The Lightning Network delivers the payment directly to the receiver's sovereign node, updating the local channel state.",
           sourceNodeId: 'node-ln',
           targetWalletId: receiver.id,
           activePath: 'ln-to-wallet',
           highlightNodes: ['node-ln', `wallet-${receiver.id}`],
-          messageBubble: { text: '✅ Received', type: 'success', targetId: receiver.id, targetType: 'wallet' },
+          messageBubble: { text: '⚡ Delivery', type: 'success', targetId: 'node-ln', targetType: 'node' },
           balanceUpdates: [
             { walletId: payer.id, balanceDiff: -totalCost, inboundDiff: payer.inboundLiquidity !== null ? amount : undefined },
             {
@@ -784,21 +784,21 @@ function buildArrivalSteps(
       case 3:
         steps.push({
           title: 'Reverse Swap',
-          text: "The Lightning payment arrives at Muun's Swap Provider, which initiates a Reverse Submarine Swap to settle the funds on-chain for the receiver.",
+          text: "The Lightning Network routes the HTLC payment to the Swap Provider, triggering a Reverse Submarine Swap.",
           sourceNodeId: 'node-ln',
           targetNodeId: 'node-swap',
           activePath: 'ln-to-swap',
           highlightNodes: ['node-ln', 'node-swap'],
-          messageBubble: { text: '🔄 Rev. Swap', type: 'success', targetId: 'node-ln', targetType: 'node' },
+          messageBubble: { text: '⚡ Route to Swap', type: 'success', targetId: 'node-ln', targetType: 'node' },
         });
         steps.push({
           title: 'Settled',
-          text: "The Swap Provider settles the on-chain output to the receiver's 2-of-2 multisig address. Balance updated in the Muun wallet.",
+          text: "The Swap Provider broadcasts the on-chain settlement transaction to the receiver's multisig address, updating the wallet balance.",
           sourceNodeId: 'node-swap',
           targetWalletId: receiver.id,
           activePath: 'swap-to-wallet',
           highlightNodes: ['node-swap', `wallet-${receiver.id}`],
-          messageBubble: { text: '✅ On-Chain', type: 'success', targetId: receiver.id, targetType: 'wallet' },
+          messageBubble: { text: '🔄 Settle', type: 'success', targetId: 'node-swap', targetType: 'node' },
           balanceUpdates: [
             { walletId: payer.id, balanceDiff: -totalCost, inboundDiff: payer.inboundLiquidity !== null ? amount : undefined },
             { walletId: receiver.id, balanceDiff: amount },
@@ -809,21 +809,21 @@ function buildArrivalSteps(
       case 4:
         steps.push({
           title: 'Minting',
-          text: "The Chaumian Mint's Lightning node receives the payment. The Mint issues new Ecash tokens via blind signatures — unlinkable to this transaction.",
+          text: "The Lightning Network routes the payment to the Chaumian Mint, triggering the Mint's issuance of new Ecash tokens.",
           sourceNodeId: 'node-ln',
           targetNodeId: 'node-mint',
           activePath: 'ln-to-mint',
           highlightNodes: ['node-ln', 'node-mint'],
-          messageBubble: { text: '🪙 Minting', type: 'success', targetId: 'node-ln', targetType: 'node' },
+          messageBubble: { text: '⚡ Fulfill', type: 'success', targetId: 'node-ln', targetType: 'node' },
         });
         steps.push({
           title: 'Tokens Delivered',
-          text: "Fresh Ecash tokens are delivered to the receiver's wallet. These are bearer instruments — only the holder can spend them.",
+          text: "The Chaumian Mint issues and delivers the fresh Ecash bearer tokens directly to the receiver's wallet.",
           sourceNodeId: 'node-mint',
           targetWalletId: receiver.id,
           activePath: 'mint-to-wallet',
           highlightNodes: ['node-mint', `wallet-${receiver.id}`],
-          messageBubble: { text: '✅ Minted', type: 'success', targetId: receiver.id, targetType: 'wallet' },
+          messageBubble: { text: '🏛️ Issue', type: 'success', targetId: 'node-mint', targetType: 'node' },
           balanceUpdates: [
             { walletId: payer.id, balanceDiff: -totalCost, inboundDiff: payer.inboundLiquidity !== null ? amount : undefined },
             { walletId: receiver.id, balanceDiff: amount },
@@ -834,12 +834,12 @@ function buildArrivalSteps(
       case 5:
         steps.push({
           title: 'Credited',
-          text: "The company's Lightning node receives the payment. The backend credits the receiver's internal database balance.",
+          text: "The Lightning Network routes the payment to the company's node, which credits the receiver's internal database balance.",
           sourceNodeId: 'node-ln',
           targetWalletId: receiver.id,
           activePath: 'ln-to-wallet',
           highlightNodes: ['node-ln', `wallet-${receiver.id}`],
-          messageBubble: { text: '✅ Credited', type: 'success', targetId: receiver.id, targetType: 'wallet' },
+          messageBubble: { text: '⚡ Delivery', type: 'success', targetId: 'node-ln', targetType: 'node' },
           balanceUpdates: [
             { walletId: payer.id, balanceDiff: -totalCost, inboundDiff: payer.inboundLiquidity !== null ? amount : undefined },
             { walletId: receiver.id, balanceDiff: amount },
@@ -888,12 +888,12 @@ function buildEcashSteps(
     },
     {
       title: 'Minted',
-      text: 'The Mint validates the tokens, invalidates the old ones, and issues fresh tokens to the receiver. No Lightning Network involved — instant and private.',
+      text: 'The Chaumian Mint validates and burns the old tokens, issuing and delivering fresh Ecash tokens to the receiver. No Lightning Network involved — instant and private.',
       sourceNodeId: 'node-mint',
       targetWalletId: receiver.id,
       activePath: 'mint-to-wallet',
       highlightNodes: ['node-mint', `wallet-${receiver.id}`],
-      messageBubble: { text: '✅ Minted', type: 'success', targetId: receiver.id, targetType: 'wallet' },
+      messageBubble: { text: '🏛️ Issue', type: 'success', targetId: 'node-mint', targetType: 'node' },
       balanceUpdates: [
         { walletId: payer.id, balanceDiff: -amount },
         { walletId: receiver.id, balanceDiff: amount },
