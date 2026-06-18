@@ -969,6 +969,7 @@ export interface TransactionLabState {
   addWallet: (name: string, category: WalletCategory, subCategory: WalletSubCategory) => void;
   deleteWallet: (id: number) => void;
   selectWallet: (id: number) => void;
+  updateWalletPosition: (walletId: number, x: number, y: number) => void;
   setCongestion: (value: boolean) => void;
   generateCode: (walletId: number, type: PaymentCodeType, amount: number | null) => void;
   startTransaction: (payerId: number, amountOverride?: number) => string | null;
@@ -1027,6 +1028,19 @@ export function useTransactionLabState(): TransactionLabState {
   const selectWallet = useCallback((id: number) => {
     setSelectedWalletId(id);
   }, []);
+
+  const updateWalletPosition = useCallback(
+    (walletId: number, x: number, y: number) => {
+      const clampedX = Math.max(0, Math.min(100, x));
+      const clampedY = Math.max(0, Math.min(100, y));
+      setWallets((prev) =>
+        prev.map((w) =>
+          w.id === walletId ? { ...w, x: clampedX, y: clampedY } : w,
+        ),
+      );
+    },
+    [],
+  );
 
   // -- Code Generation --
 
@@ -1187,6 +1201,7 @@ export function useTransactionLabState(): TransactionLabState {
     addWallet,
     deleteWallet,
     selectWallet,
+    updateWalletPosition,
     setCongestion,
     generateCode,
     startTransaction,

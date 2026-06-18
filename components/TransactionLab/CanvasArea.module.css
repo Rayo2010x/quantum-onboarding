@@ -1,0 +1,222 @@
+/* CanvasArea — Interactive canvas for infrastructure nodes, wallet tokens,
+   SVG connector paths, and step message bubbles.
+
+   QuantumBTC Transaction Lab
+   Follows QL_Transaction_Lab_Spec.md Rule IV:
+   - CSS Modules only (no Tailwind)
+   - Colors via CSS custom properties (no hard-coded hex) */
+
+/* ── Canvas container ── */
+
+.canvas {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.canvasGrid {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+}
+
+/* ── Infrastructure nodes ── */
+
+.infraNode {
+  position: absolute;
+  width: 90px;
+  height: 90px;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transform: translate(-50%, -50%);
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  z-index: 3;
+  pointer-events: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.infraNodeHighlighted {
+  border-color: var(--primary);
+  box-shadow: 0 0 18px rgba(247, 147, 26, 0.35);
+}
+
+.infraIcon {
+  font-size: 1.3rem;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.infraLabel {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  text-align: center;
+  color: var(--text-muted);
+  pointer-events: none;
+  max-width: 80px;
+  line-height: 1.15;
+}
+
+/* ── Wallet tokens (draggable) ── */
+
+.walletToken {
+  position: absolute;
+  width: 96px;
+  height: 96px;
+  background: var(--bg-card);
+  border: 2px solid var(--primary);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  z-index: 5;
+  user-select: none;
+  touch-action: none;
+  transition: box-shadow 0.2s, border-color 0.2s;
+  transform: translate(-50%, -50%);
+}
+
+.walletToken:hover {
+  box-shadow: 0 0 20px rgba(247, 147, 26, 0.3);
+}
+
+.walletTokenSelected {
+  border-color: var(--success) !important;
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.4);
+}
+
+.walletTokenDragging {
+  cursor: grabbing;
+  box-shadow: 0 0 28px rgba(247, 147, 26, 0.5);
+  z-index: 10;
+}
+
+.walletTokenHighlighted {
+  box-shadow: 0 0 22px rgba(247, 147, 26, 0.45);
+}
+
+.tokenBadge {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-weight: 800;
+  font-size: 0.6rem;
+  pointer-events: none;
+  color: var(--text-muted);
+}
+
+.tokenName {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-align: center;
+  max-width: 76px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: none;
+  color: var(--foreground);
+}
+
+.tokenBalance {
+  font-size: 0.7rem;
+  color: var(--success);
+  font-family: 'Courier New', monospace;
+  margin-top: 1px;
+  pointer-events: none;
+}
+
+.tokenInbound {
+  font-size: 0.55rem;
+  color: var(--text-dim);
+  font-family: 'Courier New', monospace;
+  pointer-events: none;
+}
+
+/* ── SVG connector layer ── */
+
+.svgLayer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.connectorBase {
+  fill: none;
+  stroke: var(--border-light);
+  stroke-width: 2;
+  opacity: 0.5;
+}
+
+.connectorActive {
+  fill: none;
+  stroke: var(--primary);
+  stroke-width: 2.5;
+  stroke-dasharray: 8 6;
+  animation: dashFlow 0.6s linear infinite;
+}
+
+@keyframes dashFlow {
+  from {
+    stroke-dashoffset: 28;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ── Step message bubble ── */
+
+.messageBubble {
+  position: absolute;
+  z-index: 12;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translate(-50%, -100%);
+  margin-top: -8px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+  animation: bubbleFadeIn 0.25s ease-out;
+}
+
+.messageBubbleSuccess {
+  background: rgba(34, 197, 94, 0.18);
+  border: 1px solid var(--success);
+  color: var(--success);
+}
+
+.messageBubbleWarning {
+  background: rgba(245, 158, 11, 0.18);
+  border: 1px solid var(--warning);
+  color: var(--warning);
+}
+
+@keyframes bubbleFadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -80%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -100%);
+  }
+}

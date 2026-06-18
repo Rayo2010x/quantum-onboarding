@@ -1,4 +1,4 @@
-/* TransactionLab — dashboard layout and canvas placeholder styles.
+/* TransactionLab — dashboard layout and canvas container styles.
    Follows QL_Transaction_Lab_Spec.md Rule IV:
    - CSS Modules only (no Tailwind)
    - Colors via CSS custom properties (no hard-coded hex values) */
@@ -26,86 +26,10 @@
   min-width: 0;
 }
 
-/* ── Canvas placeholder ── */
+/* ── Canvas container (hosts CanvasArea component) ── */
 
-.canvasPlaceholder {
+.canvasContainer {
   flex: 1;
   position: relative;
   overflow: hidden;
-}
-
-.canvasGrid {
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 24px 24px;
-  pointer-events: none;
-}
-
-/* ── Wallet tokens on canvas ── */
-
-.walletToken {
-  position: absolute;
-  width: 96px;
-  height: 96px;
-  background: var(--bg-card);
-  border: 2px solid var(--primary);
-  border-radius: 50%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-  z-index: 5;
-  user-select: none;
-  transition: box-shadow 0.2s, border-color 0.2s;
-  transform: translate(-50%, -50%);
-}
-
-.walletToken:hover {
-  box-shadow: 0 0 20px rgba(247, 147, 26, 0.3);
-}
-
-.walletTokenSelected {
-  border-color: var(--success) !important;
-  box-shadow: 0 0 20px rgba(34, 197, 94, 0.4);
-}
-
-.tokenBadge {
-  position: absolute;
-  top: 6px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-weight: 800;
-  font-size: 0.6rem;
-  pointer-events: none;
-  color: var(--text-muted);
-}
-
-.tokenName {
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-align: center;
-  max-width: 76px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  pointer-events: none;
-  color: var(--foreground);
-}
-
-.tokenBalance {
-  font-size: 0.7rem;
-  color: var(--success);
-  font-family: 'Courier New', monospace;
-  margin-top: 1px;
-  pointer-events: none;
-}
-
-.tokenInbound {
-  font-size: 0.55rem;
-  color: var(--text-dim);
-  font-family: 'Courier New', monospace;
-  pointer-events: none;
 }

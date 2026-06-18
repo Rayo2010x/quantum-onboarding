@@ -3,9 +3,8 @@
  *
  * Composes the Transaction Simulator dashboard from sub-components:
  * - Sidebar (controls, wallet CRUD, detail panel)
- * - Canvas placeholder (Phase 4 will replace with interactive SVG)
+ * - CanvasArea (interactive infrastructure nodes, draggable tokens, SVG paths)
  * - PlaybackPanel (step navigation)
- * - Legend (category color key)
  *
  * @see QL_Transaction_Lab_Spec.md §3 — Component Architecture
  */
@@ -14,29 +13,8 @@ import React from 'react';
 import styles from './TransactionLab.module.css';
 import { useTransactionLabState } from './TransactionLab/useTransactionLabState';
 import Sidebar from './TransactionLab/Sidebar';
+import CanvasArea from './TransactionLab/CanvasArea';
 import PlaybackPanel from './TransactionLab/PlaybackPanel';
-import Legend from './TransactionLab/Legend';
-import type { EffectiveCategory } from './TransactionLab/types';
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-/** Compute effective category key for display. */
-function getEffCatKey(
-  category: number,
-  subCategory: string | null,
-): string {
-  if (category === 2) return `2${subCategory ?? 'a'}`;
-  return String(category);
-}
-
-/** Format large numbers compactly (e.g. 500k, 1.5M). */
-function formatCompact(n: number): string {
-  if (n >= 1_000_000) return (n / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'M';
-  if (n >= 1_000) return Math.round(n / 1_000) + 'k';
-  return n.toLocaleString();
-}
 
 // ---------------------------------------------------------------------------
 // Component
@@ -54,6 +32,7 @@ export default function TransactionLab() {
     addWallet,
     deleteWallet,
     selectWallet,
+    updateWalletPosition,
     setCongestion,
     generateCode,
     startTransaction,
@@ -85,51 +64,16 @@ export default function TransactionLab() {
 
       {/* Main area: canvas + playback */}
       <div className={styles.mainArea}>
-        {/* Canvas placeholder — Phase 4 will replace with interactive SVG */}
-        <div className={styles.canvasPlaceholder}>
-          <div className={styles.canvasGrid} aria-hidden="true" />
-          {wallets.map((w) => {
-            const ec = getEffCatKey(w.category, w.subCategory);
-            const isSelected = w.id === selectedWalletId;
-            return (
-              <div
-                key={w.id}
-                className={`${styles.walletToken} ${isSelected ? styles.walletTokenSelected : ''}`}
-                style={{
-                  left: `${w.x}%`,
-                  top: `${w.y}%`,
-                  borderColor: `var(--cat-${w.category})`,
-                }}
-                onClick={() => selectWallet(w.id)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    selectWallet(w.id);
-                  }
-                }}
-                aria-label={`${w.name} — ${w.balance.toLocaleString()} sats`}
-              >
-                <span className={styles.tokenBadge} style={{ color: `var(--cat-${w.category})` }}>
-                  {ec}
-                </span>
-                <span className={styles.tokenName}>{w.name}</span>
-                <span className={styles.tokenBalance}>
-                  {w.balance.toLocaleString()} sats
-                </span>
-                {w.inboundLiquidity !== null && (
-                  <span
-                    className={styles.tokenInbound}
-                    style={w.inboundLiquidity <= 0 ? { color: 'var(--danger)' } : undefined}
-                  >
-                    ↓ {formatCompact(Math.max(0, w.inboundLiquidity))}
-                  </span>
-                )}
-              </div>
-            );
-          })}
-          <Legend />
+        {/* Interactive canvas */}
+        <div className={styles.canvasContainer}>
+          <CanvasArea
+            wallets={wallets}
+            selectedWalletId={selectedWalletId}
+            currentStep={currentStep}
+            stepIdx={stepIdx}
+            onSelectWallet={selectWallet}
+            onUpdateWalletPosition={updateWalletPosition}
+          />
         </div>
 
         {/* Playback panel */}
