@@ -56,6 +56,8 @@ interface CanvasAreaProps {
   onSelectWallet: (id: number) => void;
   /** Callback: update wallet position after drag. */
   onUpdateWalletPosition: (walletId: number, x: number, y: number) => void;
+  /** Callback: delete a wallet. */
+  onDeleteWallet: (id: number) => void;
 }
 
 // ---------------------------------------------------------------------------
@@ -141,6 +143,7 @@ export default function CanvasArea({
   stepIdx,
   onSelectWallet,
   onUpdateWalletPosition,
+  onDeleteWallet,
 }: CanvasAreaProps) {
   // -- Refs --
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -447,6 +450,17 @@ export default function CanvasArea({
             }}
             aria-label={`${w.name} — ${w.balance.toLocaleString()} sats`}
           >
+            <button
+              className={styles.tokenDeleteBtn}
+              onClick={(e) => {
+                e.stopPropagation(); // Prevents selecting/focusing the wallet when clicking delete
+                onDeleteWallet(w.id);
+              }}
+              onPointerDown={(e) => e.stopPropagation()} // Prevents pointer capture/dragging when clicking delete
+              aria-label={`Delete ${w.name}`}
+            >
+              ✕
+            </button>
             <span
               className={styles.tokenBadge}
               style={{ color: `var(--cat-${w.category})` }}

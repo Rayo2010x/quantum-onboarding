@@ -73,6 +73,7 @@ export default function TransactionLab() {
             stepIdx={stepIdx}
             onSelectWallet={selectWallet}
             onUpdateWalletPosition={updateWalletPosition}
+            onDeleteWallet={deleteWallet}
           />
         </div>
 

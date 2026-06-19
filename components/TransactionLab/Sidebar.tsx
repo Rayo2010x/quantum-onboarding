@@ -575,40 +575,7 @@ export default function Sidebar({
         Add to Board
       </button>
 
-      {/* Wallet List */}
-      <h2 className={styles.sectionHeading}>Wallets</h2>
-      <ul className={styles.walletList}>
-        {wallets.map((w) => (
-          <li
-            key={w.id}
-            className={`${styles.walletListItem} ${CAT_CLASS[w.category]} ${
-              selectedWalletId === w.id ? styles.walletListItemSelected : ''
-            }`}
-            onClick={() => onSelectWallet(w.id)}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                onSelectWallet(w.id);
-              }
-            }}
-          >
-            <span className={styles.walletName}>{w.name}</span>
-            <button
-              className={styles.deleteBtn}
-              onClick={(e) => {
-                e.stopPropagation();
-                onDeleteWallet(w.id);
-              }}
-              aria-label={`Delete ${w.name}`}
-              type="button"
-            >
-              ✕
-            </button>
-          </li>
-        ))}
-      </ul>
+
 
       {/* Detail panel */}
       <div className={styles.detailPanel}>{renderDetailPanel()}</div>
