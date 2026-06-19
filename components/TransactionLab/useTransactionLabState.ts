@@ -241,7 +241,7 @@ function buildDepartureSteps(
         });
         steps.push({
           title: 'Routing',
-          text: 'The LSP routes the Lightning payment through the network toward the Swap Provider.',
+          text: 'The LSP routes the Lightning payment through the network toward the Swap Provider. *(Tech Note: If a transaction is very large, modern Lightning wallets automatically split the payment into smaller parts using Multi-Path Payments - MPP, routing them through different paths simultaneously to bypass channel capacity limits).*',
           sourceNodeId: 'node-lsp',
           targetNodeId: 'node-ln',
           activePath: 'lsp-to-ln',
@@ -504,7 +504,7 @@ function buildDepartureSteps(
         });
         steps.push({
           title: 'Routing',
-          text: 'The LSP forwards the HTLC payment through the Lightning Network toward the destination.',
+          text: 'The LSP forwards the HTLC payment through the Lightning Network toward the destination. *(Tech Note: If a transaction is very large, modern Lightning wallets automatically split the payment into smaller parts using Multi-Path Payments - MPP, routing them through different paths simultaneously to bypass channel capacity limits).*',
           sourceNodeId: 'node-lsp',
           targetNodeId: 'node-ln',
           activePath: 'lsp-to-ln',
@@ -516,7 +516,7 @@ function buildDepartureSteps(
       case '2a':
         steps.push({
           title: 'Sovereign Routing',
-          text: 'Your sovereign node performs source-based pathfinding using its local network graph and sends the payment directly into the Lightning Network. No LSP intermediary.',
+          text: 'Your sovereign node performs source-based pathfinding using its local network graph and sends the payment directly into the Lightning Network. No LSP intermediary. *(Tech Note: If a transaction is very large, modern Lightning wallets automatically split the payment into smaller parts using Multi-Path Payments - MPP, routing them through different paths simultaneously to bypass channel capacity limits).*',
           sourceWalletId: payer.id,
           targetNodeId: 'node-ln',
           activePath: 'wallet-to-ln',
