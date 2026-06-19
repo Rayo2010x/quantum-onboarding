@@ -1,7 +1,7 @@
 > **ID:** QL_Transaction_Lab_Spec
-> **Version:** 0.2
-> **Last Updated:** 2026-06-11
-> **Status:** DRAFT
+> **Version:** 1.0
+> **Last Updated:** 2026-06-19
+> **Status:** APPROVED
 
 # Technical Specification & Development Rules: Transaction Lab
 
@@ -98,6 +98,7 @@ Holds the core state and exports functions to modify it. It contains:
 Renders the relative-positioned drag board (100% width/height of available space).
 * **Fixed Infrastructure Nodes:** Renders the 7 system nodes (Mempool, Blockchain, LSP Node, Lightning Network, Chaumian Mint, Swap Provider, Custodial Servers) at relative coordinates.
 * **Draggable Wallet Tokens:** Rendered at coordinates `x%` and `y%`. Pointer events (`onPointerDown`, `onPointerMove`, `onPointerUp`) track dragging coordinates relative to the canvas bounding rect.
+* **Delete Button (✕):** Each wallet token renders a small delete button in its top-right corner. Clicking the button calls `onDeleteWallet` and intercepts pointer capturing to delete the wallet instantly without triggering dragging or selection.
 * **SVG Layer:** An absolute overlay behind the tokens. Draws the `<path>` line between nodes for the active step. The active line uses `stroke-dasharray` and CSS animation for flow simulation.
 
 #### 3. `Sidebar.tsx`
